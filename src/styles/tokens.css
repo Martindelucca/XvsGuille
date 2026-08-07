@@ -1,0 +1,114 @@
+/* ============================================================================
+ *  DESIGN TOKENS — única fuente de verdad de color, tipografía, ritmo y motion.
+ *  Ningún componente define valores crudos: todos consumen estas variables.
+ * ========================================================================== */
+
+:root {
+  /* --- Color: escala azul → papel ---------------------------------------- */
+  --c-navy-deep: #0c1e38;
+  --c-navy: #17345c;
+  --c-navy-soft: #22456f;
+  --c-blue: #496e8c;
+  --c-blue-light: #dce8f0;
+  --c-blue-mist: #eef4f9;
+  --c-ivory: #faf9f6;
+  --c-white: #ffffff;
+  --c-silver: #c9d3dc;
+
+  /* Texto sobre fondo oscuro.
+     `faint` está calibrado contra el punto MÁS CLARO del degradado del hero
+     (#1d3d68), no contra el navy profundo: ahí es donde el contraste aprieta.
+     → 4.6:1 en el peor caso, 7.1:1 sobre navy-deep. */
+  --c-on-dark: #f4f7fa;
+  --c-on-dark-muted: #a9bfd3; /* 8.9:1 sobre navy-deep */
+  --c-on-dark-faint: #94acc4; /* 5.3:1 sobre navy */
+
+  /* Texto sobre papel */
+  --c-on-light: #16304f;
+  --c-on-light-muted: #496e8c; /* 5.2:1 sobre marfil */
+  --c-on-light-soft: #556f88; /* 5.0:1 — el tono más claro admisible en TEXTO */
+  --c-on-light-faint: #8aa2b8; /* SÓLO filetes y ornamentos: no llega a AA */
+
+  /* Semánticos */
+  --c-error: #a03a3a;
+  --c-error-on-dark: #f0b3b3;
+  --c-focus: #7fb2e0;
+
+  /* Filetes */
+  --line-hairline: 1px solid color-mix(in srgb, var(--c-navy) 18%, transparent);
+  --line-hairline-dark: 1px solid color-mix(in srgb, var(--c-silver) 22%, transparent);
+
+  /* --- Tipografía --------------------------------------------------------- */
+  --f-display: 'Cormorant Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --f-sans: 'Jost Variable', 'Jost', 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
+
+  /* Escala fluida. El cuerpo nunca baja de 16px. */
+  --t-hero: clamp(5.5rem, 30vw, 13rem); /* XV */
+  --t-display: clamp(2.75rem, 12vw, 5.5rem); /* Guille */
+  --t-title: clamp(2rem, 7.5vw, 3.25rem); /* títulos de sección */
+  --t-lead: clamp(1.25rem, 4.6vw, 1.75rem); /* frases emocionales */
+  --t-body: clamp(1rem, 3.6vw, 1.125rem);
+  --t-small: 0.9375rem;
+  --t-label: 0.75rem; /* versalitas */
+  --t-numeral: clamp(2.75rem, 13vw, 4.5rem); /* countdown */
+
+  --lh-tight: 0.9;
+  --lh-snug: 1.15;
+  --lh-normal: 1.6;
+  --lh-relaxed: 1.75;
+
+  --ls-label: 0.28em;
+  --ls-wide: 0.18em;
+  --ls-display: 0.02em;
+
+  /* --- Ritmo vertical y espaciado ---------------------------------------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 2.5rem;
+  --s-8: 3rem;
+  --s-10: 4rem;
+  --s-12: 5rem;
+  --s-16: 7rem;
+
+  --section-y: clamp(5.5rem, 14vh, 10rem);
+  --gutter: clamp(1.5rem, 6vw, 3rem);
+  --measure: 34rem; /* ancho máximo de lectura */
+  --content-max: 60rem;
+
+  /* --- Forma -------------------------------------------------------------- */
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-pill: 999px;
+
+  --shadow-float: 0 8px 30px -12px rgb(12 30 56 / 0.45);
+  --shadow-lift: 0 18px 50px -24px rgb(12 30 56 / 0.55);
+
+  /* --- Motion ------------------------------------------------------------- */
+  --e-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --e-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --d-micro: 320ms;
+  --d-base: 640ms;
+  --d-reveal: 900ms;
+  --d-curtain: 1100ms;
+
+  /* Multiplicador global de motion: 0 cuando el usuario pide menos movimiento */
+  --motion: 1;
+
+  --z-content: 1;
+  --z-float: 40;
+  --z-overlay: 100;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion: 0;
+    --d-micro: 1ms;
+    --d-base: 1ms;
+    --d-reveal: 1ms;
+    --d-curtain: 1ms;
+  }
+}

@@ -1,0 +1,106 @@
+---
+/**
+ * Sección "faro": es la razón por la que el invitado vuelve a abrir la web
+ * durante la fiesta. Por eso es la más contrastada de toda la página.
+ */
+import Icon from './ornaments/Icon.astro';
+import Rule from './ornaments/Rule.astro';
+import { event } from '@/data/event.config';
+import { copy } from '@/data/copy';
+---
+
+<section class="section section--dark grain album" id="fotos" aria-labelledby="album-title">
+  <div class="album__glow" aria-hidden="true"></div>
+
+  <div class="wrap wrap--narrow stack">
+    <span class="album__icon" data-reveal="0" aria-hidden="true">
+      <Icon name="camera" size={30} />
+    </span>
+
+    <p class="label album__label" data-reveal="1">{copy.photos.label}</p>
+
+    <h2 class="title album__title" id="album-title" data-reveal="2">{copy.photos.title}</h2>
+
+    <span class="album__rule" data-reveal="3"><Rule width="80px" /></span>
+
+    <p class="body album__text" data-reveal="4">{copy.photos.text}</p>
+
+    <a
+      class="btn btn--onDark album__cta"
+      href={event.driveUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-reveal="5"
+    >
+      <Icon name="camera" class="btn__icon" />
+      {copy.photos.cta}
+    </a>
+
+    <p class="album__note" data-reveal="6">{copy.photos.note}</p>
+  </div>
+</section>
+
+<style>
+  .album {
+    background-color: var(--c-navy-deep);
+  }
+
+  .album__glow {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: min(120vw, 780px);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--c-blue) 26%, transparent) 0%,
+      transparent 62%
+    );
+    filter: blur(50px);
+    pointer-events: none;
+  }
+
+  .album__icon {
+    display: grid;
+    place-items: center;
+    inline-size: 66px;
+    block-size: 66px;
+    border: 1px solid color-mix(in srgb, var(--c-silver) 30%, transparent);
+    border-radius: 50%;
+    color: var(--c-blue-light);
+  }
+
+  .album__label {
+    margin-block-start: var(--s-6);
+  }
+
+  .album__title {
+    margin-block-start: var(--s-4);
+    color: var(--c-white);
+  }
+
+  .album__rule {
+    display: block;
+    margin-block-start: var(--s-5);
+    color: var(--c-blue);
+  }
+
+  .album__text {
+    margin-block-start: var(--s-5);
+    max-inline-size: 27rem;
+  }
+
+  .album__cta {
+    margin-block-start: var(--s-8);
+    min-inline-size: min(21rem, 100%);
+  }
+
+  .album__note {
+    margin-block-start: var(--s-6);
+    max-inline-size: 22rem;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--c-on-dark-faint);
+  }
+</style>

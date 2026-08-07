@@ -1,0 +1,106 @@
+---
+import '@/styles/fonts.css';
+import '@/styles/tokens.css';
+import '@/styles/base.css';
+import '@/styles/typography.css';
+import { event } from '@/data/event.config';
+import { copy } from '@/data/copy';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+  bodyClass?: string;
+}
+
+const {
+  title = copy.seo.title,
+  description = copy.seo.description,
+  noindex = false,
+  bodyClass = '',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, event.siteUrl).href;
+const ogImage = new URL(event.ogImage, event.siteUrl).href;
+---
+
+<!doctype html>
+<html lang="es-AR" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    {/* La fuente del LCP se pide antes de que el CSS la descubra */}
+    <link
+      rel="preload"
+      href="/fonts/cormorant-garamond-latin-300-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/jost-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <meta name="theme-color" content="#0C1E38" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    {/* Open Graph — lo que se ve al pegar el link en WhatsApp */}
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:site_name" content={`${event.eventType} de ${event.celebrantShort}`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content={`${event.eventType} de ${event.celebrant} — ${event.displayDate}`}
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline>
+      // Marca temprana de JS: evita el flash del overlay en navegadores sin JS
+      // y permite que el CSS decida sin esperar al bundle.
+      document.documentElement.classList.remove('no-js');
+      document.documentElement.classList.add('js');
+    </script>
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: `${event.eventType} de ${event.celebrant}`,
+      startDate: event.date || undefined,
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      description,
+      image: [ogImage],
+      location: event.venue
+        ? {
+            '@type': 'Place',
+            name: event.venue,
+            address: event.address || undefined,
+          }
+        : undefined,
+      organizer: { '@type': 'Person', name: event.celebrant },
+    })} />
+  </head>
+
+  <body class={bodyClass}>
+    <slot />
+  </body>
+</html>

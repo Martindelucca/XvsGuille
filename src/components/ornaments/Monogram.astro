@@ -1,0 +1,68 @@
+---
+/**
+ * Monograma en anillo fino. Es la firma gráfica de toda la invitación:
+ * aparece en la apertura, en el cierre y en el sobre del PDF.
+ * Las letras van en Cormorant, no en un path: escalan sin perder nitidez.
+ */
+interface Props {
+  text?: string;
+  size?: number;
+  class?: string;
+  [key: string]: unknown;
+}
+// `...rest` deja pasar data-rise, data-reveal, style… como en cualquier
+// elemento nativo. Sin esto, los atributos del padre se perderían.
+const { text = 'GC', size = 88, class: className = '', style = '', ...rest } = Astro.props;
+---
+
+<span
+  class={`monogram ${className}`}
+  style={`--mono-size:${size}px;${style}`}
+  aria-hidden="true"
+  {...rest}
+>
+  <svg viewBox="0 0 100 100" class="monogram__ring" focusable="false">
+    <circle cx="50" cy="50" r="47" />
+    <circle cx="50" cy="50" r="43" class="monogram__ring-inner" />
+  </svg>
+  <span class="monogram__text">{text}</span>
+</span>
+
+<style>
+  .monogram {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--mono-size);
+    block-size: var(--mono-size);
+    flex: none;
+  }
+
+  .monogram__ring {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 0.6;
+    opacity: 0.4;
+  }
+
+  .monogram__ring-inner {
+    stroke-width: 0.35;
+    opacity: 0.5;
+    stroke-dasharray: 1 5;
+    stroke-linecap: round;
+  }
+
+  .monogram__text {
+    font-family: var(--f-display);
+    font-size: calc(var(--mono-size) * 0.42);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-indent: 0.06em;
+    color: currentColor;
+  }
+</style>

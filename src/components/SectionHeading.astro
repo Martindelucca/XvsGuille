@@ -1,0 +1,43 @@
+---
+/** Encabezado común: versalita + título + filete. Evita repetir el patrón. */
+import Rule from './ornaments/Rule.astro';
+
+interface Props {
+  label: string;
+  title?: string;
+  id?: string;
+  rule?: boolean;
+}
+const { label, title, id, rule = true } = Astro.props;
+---
+
+<header class="heading" data-reveal="0">
+  <p class="label">{label}</p>
+  {title && <h2 class="title heading__title" id={id}>{title}</h2>}
+  {/* Sin data-reveal propio: entra junto con el bloque del encabezado. */}
+  {rule && <Rule width="90px" class="heading__rule" />}
+</header>
+
+<style>
+  .heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .heading__title {
+    margin-block-start: var(--s-4);
+  }
+
+  /* Rule es un componente hijo: su scope no es el de este archivo. */
+  :global(.heading__rule) {
+    margin-block-start: var(--s-5);
+    color: var(--c-on-light-faint);
+  }
+
+  :global(.section--dark .heading__rule),
+  :global(.section--navy .heading__rule) {
+    color: var(--c-blue);
+  }
+</style>

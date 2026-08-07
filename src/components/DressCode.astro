@@ -1,0 +1,47 @@
+---
+import Rule from './ornaments/Rule.astro';
+import { event, filled } from '@/data/event.config';
+import { copy } from '@/data/copy';
+---
+
+<section class="section section--navy dress" id="dresscode" aria-labelledby="dress-title">
+  <div class="wrap wrap--narrow stack">
+    <p class="label" data-reveal="0">{copy.dressCode.label}</p>
+
+    <h2 class="dress__value" id="dress-title" data-reveal="1">{event.dressCode}</h2>
+
+    <span class="dress__rule" data-reveal="2"><Rule width="80px" /></span>
+
+    {
+      filled(event.dressCodeNote) && (
+        <p class="body dress__note" data-reveal="3">
+          {event.dressCodeNote}
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .dress__value {
+    margin-block-start: var(--s-5);
+    font-family: var(--f-display);
+    font-size: clamp(2.75rem, 13vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: 0.03em;
+    text-indent: 0.03em;
+    color: var(--c-white);
+  }
+
+  .dress__rule {
+    display: block;
+    margin-block-start: var(--s-6);
+    color: var(--c-blue);
+  }
+
+  .dress__note {
+    margin-block-start: var(--s-5);
+    max-inline-size: 24rem;
+  }
+</style>

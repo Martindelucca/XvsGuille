@@ -1,0 +1,136 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import Icon from './ornaments/Icon.astro';
+import { event, sections, mapsHref, calendarHref, filled } from '@/data/event.config';
+import { copy } from '@/data/copy';
+
+const maps = mapsHref();
+const calendar = calendarHref();
+---
+
+<section class="section section--mist location" id="ubicacion" aria-labelledby="location-title">
+  <div class="wrap wrap--narrow stack">
+    <SectionHeading label={copy.location.label} title={copy.location.title} id="location-title" />
+
+    <div class="location__card" data-reveal="2">
+      {filled(event.venue) && <p class="location__venue">{event.venue}</p>}
+
+      {filled(event.address) && <p class="location__address">{event.address}</p>}
+
+      {
+        filled(event.time) && (
+          <p class="data location__time">
+            <span class="location__time-label">Desde las</span> {event.time}
+          </p>
+        )
+      }
+    </div>
+
+    {
+      maps && (
+        <a
+          class="btn btn--solid location__cta"
+          href={maps}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-reveal="3"
+        >
+          <Icon name="pin" class="btn__icon" />
+          {copy.location.cta}
+        </a>
+      )
+    }
+
+    {
+      calendar && (
+        <a
+          class="btn btn--quiet location__calendar"
+          href={calendar}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-reveal="4"
+        >
+          <Icon name="calendar" size={16} class="btn__icon" />
+          <span>
+            {copy.location.calendar}
+            <span class="btn__underline" aria-hidden="true" />
+          </span>
+        </a>
+      )
+    }
+
+    {
+      sections.map && (
+        <div class="location__map" data-reveal="5">
+          <iframe
+            src={event.mapsEmbedUrl}
+            title={`Mapa de ${event.venue || 'la ubicación'}`}
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .location__card {
+    margin-block-start: var(--s-10);
+  }
+
+  .location__venue {
+    font-family: var(--f-display);
+    font-size: clamp(1.75rem, 6.5vw, 2.5rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--c-navy);
+  }
+
+  .location__address {
+    margin-block-start: var(--s-4);
+    font-size: var(--t-body);
+    line-height: 1.6;
+    color: var(--c-on-light-muted);
+    max-inline-size: 24rem;
+    margin-inline: auto;
+  }
+
+  .location__time {
+    margin-block-start: var(--s-5);
+    color: var(--c-navy);
+  }
+
+  .location__time-label {
+    color: var(--c-on-light-soft);
+  }
+
+  .location__cta {
+    margin-block-start: var(--s-8);
+    min-inline-size: min(19rem, 100%);
+  }
+
+  .location__calendar {
+    margin-block-start: var(--s-5);
+    color: var(--c-on-light-muted);
+    font-size: 0.6875rem;
+  }
+
+  .location__map {
+    inline-size: 100%;
+    margin-block-start: var(--s-8);
+    border: 1px solid color-mix(in srgb, var(--c-navy) 14%, transparent);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    /* El mapa de Google es muy saturado: lo bajamos al tono de la invitación */
+    filter: saturate(0.55) contrast(0.95);
+  }
+
+  .location__map iframe {
+    display: block;
+    inline-size: 100%;
+    block-size: clamp(220px, 40vw, 340px);
+    border: 0;
+  }
+</style>

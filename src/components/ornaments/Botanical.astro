@@ -1,0 +1,69 @@
+---
+/**
+ * Rama botánica abstracta, dibujada sólo con trazos.
+ * No es un clipart floral: es una línea que sugiere un tallo, para dar aire
+ * editorial a las esquinas sin ensuciar la composición.
+ * Se anima "dibujándose" cuando entra en pantalla (si el usuario lo permite).
+ */
+interface Props {
+  flip?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const { flip = false, class: className = '', ...rest } = Astro.props;
+---
+
+<svg
+  class={`botanical ${flip ? 'is-flipped' : ''} ${className}`}
+  viewBox="0 0 120 260"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  {...rest}
+>
+  <path class="botanical__stem" d="M60 258C60 200 58 150 44 104C34 70 20 44 6 24" />
+  <path class="botanical__leaf" d="M46 118C30 112 20 98 18 82C36 82 48 96 52 112" />
+  <path class="botanical__leaf" d="M52 152C68 146 80 132 82 116C64 116 52 130 48 146" />
+  <path class="botanical__leaf" d="M56 192C40 188 28 176 24 160C42 158 56 170 60 186" />
+  <path class="botanical__leaf" d="M40 88C56 82 66 68 66 52C50 54 40 68 38 84" />
+  <circle class="botanical__bud" cx="6" cy="24" r="3.5" />
+</svg>
+
+<style>
+  /* Tamaño y opacidad se controlan desde afuera con custom properties: una
+     clase del padre no puede ganarle en especificidad al scope del hijo. */
+  .botanical {
+    inline-size: var(--botanical-w, 100%);
+    block-size: auto;
+    stroke: currentColor;
+    stroke-width: 0.9;
+    stroke-linecap: round;
+    fill: none;
+    opacity: var(--botanical-opacity, 0.28);
+  }
+
+  .botanical.is-flipped {
+    transform: scaleX(-1);
+  }
+
+  .botanical__bud {
+    fill: currentColor;
+    stroke: none;
+    opacity: 0.6;
+  }
+
+  /* Trazo que se dibuja al aparecer */
+  .botanical path {
+    stroke-dasharray: 320;
+    stroke-dashoffset: calc(320 * var(--motion));
+    transition: stroke-dashoffset 2200ms var(--e-out);
+  }
+
+  /* Se dibuja cuando su bloque entra en pantalla (reveal) o, en el hero,
+     cuando se abre la invitación. */
+  :global(.is-visible) .botanical path,
+  :global(body.is-open) .botanical path,
+  :global(html.no-js) .botanical path {
+    stroke-dashoffset: 0;
+  }
+</style>

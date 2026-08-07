@@ -1,0 +1,81 @@
+---
+/**
+ * Único elemento persistente de navegación. No es un navbar: es un atajo que
+ * aparece cuando el invitado ya vio el hero y desaparece al llegar al
+ * formulario o después de confirmar.
+ */
+import { copy } from '@/data/copy';
+---
+
+<a class="floating" href="#confirmar" data-floating-cta data-visible="false">
+  <span class="floating__dot" aria-hidden="true"></span>
+  {copy.floatingCta}
+</a>
+
+<style>
+  .floating {
+    position: fixed;
+    inset-block-end: max(var(--s-4), env(safe-area-inset-bottom));
+    inset-inline: var(--gutter);
+    z-index: var(--z-float);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-3);
+    min-block-size: 50px;
+    /* misma compensación óptica que .btn: el tracking sobra a la derecha */
+    padding-block: var(--s-3);
+    padding-inline: calc(var(--s-6) + 0.09em) calc(var(--s-6) - 0.09em);
+    margin-inline: auto;
+    max-inline-size: 22rem;
+    border-radius: var(--r-pill);
+    background-color: color-mix(in srgb, var(--c-navy-deep) 92%, transparent);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-float);
+    color: var(--c-ivory);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    text-decoration: none;
+
+    opacity: 0;
+    transform: translate3d(0, calc(16px * var(--motion)), 0);
+    pointer-events: none;
+    transition:
+      opacity var(--d-base) var(--e-out),
+      transform var(--d-base) var(--e-out);
+  }
+
+  .floating[data-visible='true'] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .floating__dot {
+    inline-size: 5px;
+    block-size: 5px;
+    border-radius: 50%;
+    background: var(--c-blue-light);
+    text-indent: 0;
+    animation: pulse 3s var(--e-in-out) infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: calc(0.4 + 0.6 * var(--motion));
+    }
+  }
+
+  /* En desktop la invitación se navega entera de un vistazo: no hace falta */
+  @media (min-width: 1024px) {
+    .floating {
+      display: none;
+    }
+  }
+</style>

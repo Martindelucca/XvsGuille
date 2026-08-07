@@ -1,0 +1,129 @@
+---
+import Monogram from './ornaments/Monogram.astro';
+import Botanical from './ornaments/Botanical.astro';
+import Icon from './ornaments/Icon.astro';
+import { event, sections, mapsHref } from '@/data/event.config';
+import { copy } from '@/data/copy';
+
+const maps = mapsHref();
+
+// Sólo se muestran los accesos que realmente existen.
+const links = [
+  maps && { href: maps, label: copy.closing.nav.location, icon: 'pin' as const, external: true },
+  { href: '#confirmar', label: copy.closing.nav.rsvp, icon: 'note' as const, external: false },
+  sections.photos && {
+    href: event.driveUrl,
+    label: copy.closing.nav.photos,
+    icon: 'camera' as const,
+    external: true,
+  },
+].filter(Boolean) as Array<{ href: string; label: string; icon: 'pin' | 'note' | 'camera'; external: boolean }>;
+---
+
+<footer class="section section--paper grain closing" id="cierre">
+  <Botanical class="closing__botanical" />
+
+  <div class="wrap wrap--narrow stack">
+    <p class="lead closing__text" data-reveal="0">{copy.closing.text}</p>
+
+    <p class="closing__signature" data-reveal="1">{copy.closing.signature}</p>
+
+    <Monogram text={event.eventType} size={64} class="closing__mono" data-reveal="2" />
+
+    <p class="data closing__date" data-reveal="3">
+      {event.dayNumber} · {event.monthName}
+    </p>
+
+    <nav class="closing__nav" aria-label="Accesos rápidos" data-reveal="4">
+      {
+        links.map((link) => (
+          <a
+            class="closing__link"
+            href={link.href}
+            target={link.external ? '_blank' : undefined}
+            rel={link.external ? 'noopener noreferrer' : undefined}
+          >
+            <Icon name={link.icon} size={16} />
+            <span>{link.label}</span>
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .closing {
+    position: relative;
+    padding-block-end: calc(var(--section-y) + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, var(--c-ivory) 0%, var(--c-blue-mist) 100%);
+  }
+
+  /* Componentes hijos: fuera del scope de este archivo. */
+  :global(.closing__botanical) {
+    position: absolute;
+    inset-block-end: -4%;
+    inset-inline-end: -8%;
+    --botanical-w: clamp(90px, 24vw, 160px);
+    --botanical-opacity: 0.35;
+    color: var(--c-blue);
+    pointer-events: none;
+  }
+
+  :global(.closing__mono) {
+    margin-block-start: var(--s-6);
+    color: var(--c-blue);
+  }
+
+  .closing__text {
+    max-inline-size: 22rem;
+    color: var(--c-on-light);
+  }
+
+  .closing__signature {
+    margin-block-start: var(--s-7);
+    font-family: var(--f-display);
+    font-size: clamp(2.5rem, 11vw, 4rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1;
+    color: var(--c-navy);
+  }
+
+  .closing__date {
+    margin-block-start: var(--s-5);
+    color: var(--c-on-light-muted);
+  }
+
+  .closing__nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--s-2) var(--s-6);
+    margin-block-start: var(--s-10);
+    padding-block-start: var(--s-8);
+    border-block-start: 1px solid color-mix(in srgb, var(--c-navy) 12%, transparent);
+    inline-size: 100%;
+  }
+
+  .closing__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: 44px;
+    padding-inline: var(--s-2);
+    font-size: 0.6875rem;
+    letter-spacing: var(--ls-wide);
+    text-indent: var(--ls-wide);
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--c-on-light-muted);
+    transition: color var(--d-micro) var(--e-out);
+  }
+
+  @media (hover: hover) {
+    .closing__link:hover {
+      color: var(--c-navy);
+    }
+  }
+</style>

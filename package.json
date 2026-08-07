@@ -1,0 +1,27 @@
+{
+  "name": "xv-guille-chalpe",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "og": "node scripts/generate-og.mjs"
+  },
+  "dependencies": {
+    "@astrojs/vercel": "^8.2.9",
+    "astro": "^5.13.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@fontsource-variable/jost": "^5.2.5",
+    "@fontsource/cormorant-garamond": "^5.2.5",
+    "@resvg/resvg-js": "^2.6.2",
+    "satori": "^0.12.1",
+    "typescript": "^5.9.2"
+  }
+}

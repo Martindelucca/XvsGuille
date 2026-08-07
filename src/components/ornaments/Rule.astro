@@ -1,0 +1,57 @@
+---
+/**
+ * Filete editorial: una línea de 1px que se desvanece hacia los extremos, con
+ * un rombo minúsculo al centro. Es el único separador de la invitación —
+ * reemplaza a cualquier tentación de poner cards o bordes.
+ */
+interface Props {
+  width?: string;
+  diamond?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  width = '120px',
+  diamond = true,
+  class: className = '',
+  style = '',
+  ...rest
+} = Astro.props;
+---
+
+<span class={`rule ${className}`} style={`--rule-w:${width};${style}`} aria-hidden="true" {...rest}>
+  <span class="rule__line"></span>
+  {diamond && <span class="rule__diamond"></span>}
+  <span class="rule__line"></span>
+</span>
+
+<style>
+  .rule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    inline-size: var(--rule-w);
+    max-inline-size: 100%;
+  }
+
+  .rule__line {
+    flex: 1;
+    block-size: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in srgb, currentColor 45%, transparent),
+      transparent
+    );
+  }
+
+  .rule__diamond {
+    flex: none;
+    inline-size: 4px;
+    block-size: 4px;
+    background: currentColor;
+    opacity: 0.5;
+    transform: rotate(45deg);
+  }
+</style>

@@ -1,0 +1,246 @@
+---
+import Rule from './ornaments/Rule.astro';
+import Botanical from './ornaments/Botanical.astro';
+import { event } from '@/data/event.config';
+import { copy } from '@/data/copy';
+---
+
+<section class="hero grain" id="inicio" aria-label={`${event.eventType} de ${event.celebrant}`}>
+  <div class="hero__halo" aria-hidden="true"></div>
+  <Botanical class="hero__botanical hero__botanical--left" />
+  <Botanical class="hero__botanical hero__botanical--right" flip />
+
+  <div class="hero__inner">
+    <p class="label hero__eyebrow" style="--stagger:380ms">
+      {event.eventType === 'XV' ? 'Mis quince' : event.eventType}
+    </p>
+
+    <p class="hero__xv" aria-hidden="true" style="--stagger:460ms">{event.eventType}</p>
+
+    <h1 class="hero__name" style="--stagger:620ms">
+      <span class="visually-hidden">{`${event.eventType} de `}</span>{event.celebrantShort}
+    </h1>
+
+    <div class="hero__meta" style="--stagger:780ms">
+      <Rule width="72px" diamond={false} />
+      <p class="data hero__date">
+        <time datetime={event.date || undefined}>{event.dayNumber} · {event.monthName}</time>
+      </p>
+      <Rule width="72px" diamond={false} />
+    </div>
+
+    <p class="lead hero__quote" style="--stagger:900ms">{copy.hero.quote}</p>
+  </div>
+
+  <a class="hero__scroll" href="#historia" aria-label="Ir al mensaje" style="--stagger:1100ms">
+    <span class="hero__scroll-label">{copy.hero.scrollHint}</span>
+    <span class="hero__scroll-line" aria-hidden="true"></span>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 100svh;
+    padding-block: clamp(5rem, 14vh, 8rem) clamp(5.5rem, 12vh, 8rem);
+    padding-inline: var(--gutter);
+    background:
+      linear-gradient(180deg, var(--c-navy-deep) 0%, var(--c-navy) 62%, #1d3d68 100%);
+    color: var(--c-on-dark);
+    text-align: center;
+    overflow: clip;
+  }
+
+  .hero__halo {
+    position: absolute;
+    inset-block-start: 6%;
+    inset-inline-start: 50%;
+    inline-size: min(150vw, 1000px);
+    aspect-ratio: 1;
+    translate: -50% 0;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--c-blue) 30%, transparent) 0%,
+      transparent 60%
+    );
+    filter: blur(50px);
+    pointer-events: none;
+  }
+
+  /* Los ornamentos son componentes hijos con su propio scope: para colocarlos
+     desde el padre hay que salir del scope explícitamente. */
+  :global(.hero__botanical) {
+    position: absolute;
+    --botanical-w: clamp(80px, 22vw, 150px);
+    --botanical-opacity: 0.5;
+    color: var(--c-blue-light);
+    pointer-events: none;
+  }
+
+  :global(.hero__botanical--left) {
+    inset-block-end: -2%;
+    inset-inline-start: -6%;
+  }
+
+  :global(.hero__botanical--right) {
+    inset-block-start: -4%;
+    inset-inline-end: -8%;
+    rotate: 180deg;
+  }
+
+  .hero__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-inline-size: 40rem;
+  }
+
+  /* Entrada en cascada, disparada al abrirse la invitación.
+     El retardo va en --stagger (definido inline en cada elemento) para que
+     ninguna regla más específica lo pise al expandir el shorthand. */
+  .hero__inner > *,
+  .hero__scroll {
+    opacity: calc(1 - var(--motion));
+    transform: translate3d(0, calc(20px * var(--motion)), 0);
+    filter: blur(calc(5px * var(--motion)));
+    transition-property: opacity, transform, filter;
+    transition-duration: 1000ms;
+    transition-timing-function: var(--e-out);
+    transition-delay: var(--stagger, 0ms);
+  }
+
+  :global(body.is-open) .hero__inner > *,
+  :global(body.is-open) .hero__scroll,
+  :global(html.no-js) .hero__inner > *,
+  :global(html.no-js) .hero__scroll {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .hero__eyebrow {
+    color: var(--c-on-dark-faint);
+  }
+
+  .hero__xv {
+    margin-block-start: var(--s-4);
+    font-family: var(--f-display);
+    font-size: var(--t-hero);
+    font-weight: 300;
+    line-height: var(--lh-tight);
+    letter-spacing: 0.04em;
+    text-indent: 0.04em;
+    background: linear-gradient(
+      170deg,
+      var(--c-white) 0%,
+      var(--c-blue-light) 48%,
+      color-mix(in srgb, var(--c-silver) 80%, var(--c-blue)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero__name {
+    margin-block-start: calc(var(--s-4) * -1);
+    font-family: var(--f-display);
+    font-size: var(--t-display);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1;
+    color: var(--c-white);
+  }
+
+  .hero__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    margin-block-start: var(--s-7);
+    color: var(--c-silver);
+  }
+
+  .hero__date {
+    color: var(--c-on-dark);
+    white-space: nowrap;
+  }
+
+  .hero__quote {
+    margin-block-start: var(--s-7);
+    max-inline-size: 26rem;
+    color: var(--c-blue-light);
+  }
+
+  /* --- Indicador de scroll ------------------------------------------------ */
+  .hero__scroll {
+    position: absolute;
+    inset-block-end: max(var(--s-6), env(safe-area-inset-bottom));
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-2) var(--s-5);
+    text-decoration: none;
+    color: var(--c-on-dark-faint);
+  }
+
+  .hero__scroll-label {
+    font-size: var(--t-label);
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    text-indent: var(--ls-label);
+  }
+
+  .hero__scroll-line {
+    inline-size: 1px;
+    block-size: 42px;
+    background: linear-gradient(to bottom, currentColor, transparent);
+    transform-origin: top;
+    animation: drop 2.6s var(--e-in-out) infinite;
+  }
+
+  @keyframes drop {
+    0% {
+      transform: scaleY(0.3);
+      opacity: 0.2;
+    }
+    45% {
+      transform: scaleY(1);
+      opacity: calc(0.3 + 0.7 * var(--motion));
+    }
+    100% {
+      transform: scaleY(0.3);
+      opacity: 0.2;
+    }
+  }
+
+  /* En pantallas bajas y apaisadas el hero no debe forzar 100svh */
+  @media (max-height: 520px) and (orientation: landscape) {
+    .hero {
+      min-block-size: auto;
+      padding-block: var(--s-12);
+    }
+    .hero__scroll {
+      display: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    :global(.hero__botanical) {
+      --botanical-w: clamp(120px, 14vw, 180px);
+      --botanical-opacity: 0.42;
+    }
+    :global(.hero__botanical--left) {
+      inset-inline-start: 2%;
+    }
+    :global(.hero__botanical--right) {
+      inset-inline-end: 2%;
+    }
+  }
+</style>

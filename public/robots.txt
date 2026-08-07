@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /sobre
+
+Sitemap: https://xv-guille.vercel.app/sitemap.xml

@@ -1,0 +1,84 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { event } from '@/data/event.config';
+import { copy } from '@/data/copy';
+---
+
+<section class="section section--paper agenda" id="agenda" aria-labelledby="agenda-title">
+  <div class="wrap wrap--narrow stack">
+    <SectionHeading label={copy.agenda.label} title={copy.agenda.title} id="agenda-title" />
+
+    <ol class="agenda__list">
+      {
+        event.agenda.map((item, i) => (
+          <li class="agenda__item" data-reveal={String(i + 2)}>
+            <span class="agenda__time">{item.time}</span>
+            <span class="agenda__dot" aria-hidden="true" />
+            <span class="agenda__label">{item.label}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .agenda__list {
+    position: relative;
+    inline-size: 100%;
+    max-inline-size: 26rem;
+    margin-block-start: var(--s-10);
+    padding: 0;
+    list-style: none;
+    text-align: start;
+  }
+
+  /* Hilo vertical de 1px que atraviesa toda la agenda */
+  .agenda__list::before {
+    content: '';
+    position: absolute;
+    inset-block: 0.6em;
+    inset-inline-start: 4.5rem;
+    inline-size: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      color-mix(in srgb, var(--c-navy) 22%, transparent) 12%,
+      color-mix(in srgb, var(--c-navy) 22%, transparent) 88%,
+      transparent
+    );
+  }
+
+  .agenda__item {
+    display: grid;
+    grid-template-columns: 4rem 1rem 1fr;
+    align-items: baseline;
+    column-gap: 0;
+    padding-block: var(--s-5);
+  }
+
+  .agenda__time {
+    font-family: var(--f-display);
+    font-size: 1.375rem;
+    font-weight: 400;
+    font-variant-numeric: lining-nums tabular-nums;
+    color: var(--c-navy);
+  }
+
+  .agenda__dot {
+    justify-self: center;
+    inline-size: 5px;
+    block-size: 5px;
+    background: var(--c-ivory);
+    box-shadow: 0 0 0 1px var(--c-blue);
+    border-radius: 50%;
+    transform: translateY(-0.3em);
+  }
+
+  .agenda__label {
+    padding-inline-start: var(--s-5);
+    font-size: var(--t-body);
+    line-height: 1.4;
+    color: var(--c-on-light-muted);
+  }
+</style>

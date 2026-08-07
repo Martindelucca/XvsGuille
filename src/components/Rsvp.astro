@@ -1,0 +1,472 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import Rule from './ornaments/Rule.astro';
+import { event, filled, whatsappFallbackHref } from '@/data/event.config';
+import { copy } from '@/data/copy';
+
+const f = copy.rsvp.fields;
+const waHref = whatsappFallbackHref();
+
+// El cliente lee estos textos desde el DOM: así el copy vive sólo en copy.ts
+// y no se duplica dentro del TypeScript.
+const errorsJson = JSON.stringify(copy.rsvp.errors);
+const messagesJson = JSON.stringify({
+  successYes: copy.rsvp.successYes,
+  successNo: copy.rsvp.successNo,
+});
+const labelsJson = JSON.stringify({
+  submit: copy.rsvp.submit,
+  submitting: copy.rsvp.submitting,
+});
+
+const companionOptions = Array.from({ length: event.maxCompanions + 1 }, (_, i) => i);
+---
+
+<section class="section section--paper grain rsvp" id="confirmar" aria-labelledby="rsvp-title">
+  <div class="wrap wrap--narrow stack">
+    <SectionHeading label={copy.rsvp.label} title={copy.rsvp.title} id="rsvp-title" />
+
+    <p class="body rsvp__intro" data-reveal="2">
+      {copy.rsvp.text}
+      {filled(event.rsvpDeadline) && <><br />{copy.rsvp.deadline(event.rsvpDeadline)}</>}
+    </p>
+
+    <!-- Formulario -->
+    <div class="rsvp__panel" data-rsvp-panel data-reveal="3">
+      <form
+        class="rsvp__form"
+        action="/api/rsvp"
+        method="post"
+        novalidate
+        data-rsvp-form
+        data-errors={errorsJson}
+        data-messages={messagesJson}
+        data-labels={labelsJson}
+      >
+        <!-- Trampa para bots. `inert` lo saca del teclado Y de los lectores de
+             pantalla; aria-hidden solo dejaría un control enfocable oculto,
+             que es un error de accesibilidad. Los bots igual lo completan. -->
+        <div class="rsvp__honeypot" inert>
+          <label for="rsvp-website">No completar</label>
+          <input id="rsvp-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <!-- Nombre -->
+        <div class="field" data-field="name">
+          <label class="field__label" for="rsvp-name">{f.name}</label>
+          <input
+            class="field__input"
+            id="rsvp-name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            enterkeyhint="next"
+            maxlength="80"
+            required
+            data-input="name"
+            aria-describedby="rsvp-name-error"
+          />
+          <p class="field__error" id="rsvp-name-error" data-field-error="name" role="alert" hidden></p>
+        </div>
+
+        <!-- Asistencia -->
+        <fieldset class="field field--choice" data-field="attending">
+          <legend class="field__label">{f.attending}</legend>
+          <div class="choices">
+            <label class="choice">
+              <input
+                class="choice__input"
+                type="radio"
+                name="attending"
+                value="yes"
+                data-input="attending"
+              />
+              <span class="choice__mark" aria-hidden="true"></span>
+              <span class="choice__text">{f.yes}</span>
+            </label>
+            <label class="choice">
+              <input class="choice__input" type="radio" name="attending" value="no" />
+              <span class="choice__mark" aria-hidden="true"></span>
+              <span class="choice__text">{f.no}</span>
+            </label>
+          </div>
+          <p class="field__error" data-field-error="attending" role="alert" hidden></p>
+        </fieldset>
+
+        <!-- Sólo si asiste -->
+        <div class="rsvp__conditional" data-rsvp-conditional hidden>
+          {
+            event.askCompanions && (
+              <div class="field">
+                <label class="field__label" for="rsvp-companions">
+                  {f.companions}
+                  <span class="field__hint">{f.companionsHint}</span>
+                </label>
+                <div class="field__select">
+                  <select class="field__input" id="rsvp-companions" name="companions">
+                    {companionOptions.map((n) => (
+                      <option value={n}>{n === 0 ? 'Voy solo/a' : n === 1 ? '1 persona' : `${n} personas`}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )
+          }
+
+          {
+            event.askDietary && (
+              <div class="field" data-field="dietary">
+                <label class="field__label" for="rsvp-dietary">{f.dietary}</label>
+                <div class="field__select">
+                  <select class="field__input" id="rsvp-dietary" name="dietary">
+                    {f.dietaryOptions.map((opt) => (
+                      <option value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div class="field__nested" data-rsvp-dietary-other hidden>
+                  <label class="field__label" for="rsvp-dietary-other">{f.dietaryOther}</label>
+                  <input
+                    class="field__input"
+                    id="rsvp-dietary-other"
+                    name="dietaryOther"
+                    type="text"
+                    maxlength="120"
+                    autocomplete="off"
+                  />
+                </div>
+
+                <p class="field__error" data-field-error="dietary" role="alert" hidden></p>
+              </div>
+            )
+          }
+        </div>
+
+        <p class="rsvp__formError" data-rsvp-error role="alert" hidden></p>
+
+        <button type="submit" class="btn btn--solid btn--block rsvp__submit" data-rsvp-submit>
+          <span data-rsvp-submit-label>{copy.rsvp.submit}</span>
+          <span class="rsvp__spinner" aria-hidden="true"></span>
+        </button>
+
+        {
+          waHref && (
+            <a
+              class="rsvp__whatsapp"
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {copy.rsvp.whatsapp}
+            </a>
+          )
+        }
+      </form>
+    </div>
+
+    <!-- Estado de éxito -->
+    <div class="rsvp__success" data-rsvp-success hidden role="status">
+      <Rule width="80px" />
+      <p class="rsvp__successTitle" data-rsvp-success-title></p>
+      <p class="body rsvp__successText" data-rsvp-success-text></p>
+      <Rule width="80px" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .rsvp__intro {
+    margin-block-start: var(--s-7);
+    max-inline-size: 27rem;
+  }
+
+  .rsvp__panel {
+    inline-size: 100%;
+    margin-block-start: var(--s-10);
+  }
+
+  .rsvp__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-7);
+    text-align: start;
+  }
+
+  .rsvp__honeypot {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* --- Campos ------------------------------------------------------------- */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-inline-size: 0; /* fieldset no debe forzar ancho mínimo */
+  }
+
+  .field__label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-3);
+    padding: 0;
+    font-size: var(--t-label);
+    font-weight: 400;
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    text-indent: var(--ls-label);
+    color: var(--c-on-light-muted);
+  }
+
+  .field__hint {
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-indent: 0;
+    text-transform: none;
+    color: var(--c-on-light-soft);
+  }
+
+  /* Inputs con filete inferior: papel, no formulario de app */
+  .field__input {
+    inline-size: 100%;
+    min-block-size: 52px;
+    padding: var(--s-3) 0;
+    border: 0;
+    border-block-end: 1px solid color-mix(in srgb, var(--c-navy) 25%, transparent);
+    border-radius: 0;
+    background: transparent;
+    font-family: var(--f-display);
+    font-size: 1.375rem;
+    font-weight: 400;
+    color: var(--c-navy);
+    transition: border-color var(--d-micro) var(--e-out);
+    appearance: none;
+  }
+
+  .field__input:hover {
+    border-color: color-mix(in srgb, var(--c-navy) 45%, transparent);
+  }
+
+  .field__input:focus {
+    outline: none;
+    border-color: var(--c-navy);
+  }
+
+  .field__input:focus-visible {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 4px;
+  }
+
+  .field__select {
+    position: relative;
+  }
+
+  /* Flecha propia: la nativa rompe la estética en Android */
+  .field__select::after {
+    content: '';
+    position: absolute;
+    inset-inline-end: 4px;
+    inset-block-start: 50%;
+    inline-size: 8px;
+    block-size: 8px;
+    border-inline-end: 1px solid var(--c-blue);
+    border-block-end: 1px solid var(--c-blue);
+    rotate: 45deg;
+    translate: 0 -70%;
+    pointer-events: none;
+  }
+
+  .field__select .field__input {
+    padding-inline-end: var(--s-6);
+    cursor: pointer;
+  }
+
+  .field__nested {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    margin-block-start: var(--s-5);
+  }
+
+  /* `display` de autor gana sobre el [hidden] del navegador: hay que
+     devolverle el poder de ocultar a mano en cada bloque con display. */
+  .field__nested[hidden],
+  .rsvp__success[hidden] {
+    display: none;
+  }
+
+  .field[data-invalid='true'] .field__input {
+    border-color: var(--c-error);
+  }
+
+  .field__error {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    color: var(--c-error);
+  }
+
+  /* --- Sí / No ------------------------------------------------------------ */
+  .choices {
+    display: grid;
+    gap: var(--s-3);
+  }
+
+  .choice {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    min-block-size: 56px;
+    padding: var(--s-3) var(--s-5);
+    border: 1px solid color-mix(in srgb, var(--c-navy) 18%, transparent);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition:
+      border-color var(--d-micro) var(--e-out),
+      background-color var(--d-micro) var(--e-out);
+  }
+
+  .choice__input {
+    position: absolute;
+    opacity: 0;
+    inline-size: 1px;
+    block-size: 1px;
+  }
+
+  .choice__mark {
+    flex: none;
+    inline-size: 15px;
+    block-size: 15px;
+    border: 1px solid var(--c-blue);
+    border-radius: 50%;
+    transition: box-shadow var(--d-micro) var(--e-out);
+  }
+
+  .choice__text {
+    font-family: var(--f-display);
+    font-size: 1.25rem;
+    line-height: 1.2;
+    color: var(--c-navy);
+  }
+
+  .choice:has(.choice__input:checked) {
+    border-color: var(--c-navy);
+    background-color: color-mix(in srgb, var(--c-blue-light) 45%, transparent);
+  }
+
+  .choice:has(.choice__input:checked) .choice__mark {
+    box-shadow: inset 0 0 0 4px var(--c-navy);
+    border-color: var(--c-navy);
+  }
+
+  .choice:has(.choice__input:focus-visible) {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 3px;
+  }
+
+  /* --- Envío -------------------------------------------------------------- */
+  .rsvp__conditional[hidden] {
+    display: none;
+  }
+
+  .rsvp__formError {
+    padding: var(--s-4) var(--s-5);
+    border-inline-start: 2px solid var(--c-error);
+    background: color-mix(in srgb, var(--c-error) 6%, transparent);
+    font-size: var(--t-small);
+    line-height: 1.5;
+    color: var(--c-error);
+  }
+
+  .rsvp__submit {
+    margin-block-start: var(--s-2);
+  }
+
+  .rsvp__spinner {
+    display: none;
+    inline-size: 14px;
+    block-size: 14px;
+    border: 1.5px solid color-mix(in srgb, currentColor 30%, transparent);
+    border-block-start-color: currentColor;
+    border-radius: 50%;
+    animation: spin 700ms linear infinite;
+  }
+
+  [aria-busy='true'] .rsvp__spinner {
+    display: block;
+  }
+
+  @keyframes spin {
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  .rsvp__whatsapp {
+    align-self: center;
+    padding: var(--s-3);
+    font-size: 0.6875rem;
+    letter-spacing: var(--ls-wide);
+    text-indent: var(--ls-wide);
+    text-transform: uppercase;
+    color: var(--c-on-light-soft);
+    text-decoration: none;
+    border-block-end: 1px solid currentColor;
+  }
+
+  /* --- Éxito -------------------------------------------------------------- */
+  .rsvp__success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-6);
+    inline-size: 100%;
+    margin-block-start: var(--s-10);
+    padding-block: var(--s-8);
+    color: var(--c-on-light-faint);
+    text-align: center;
+  }
+
+  .rsvp__success:not([hidden]) {
+    animation: appear var(--d-reveal) var(--e-out) both;
+  }
+
+  @keyframes appear {
+    from {
+      opacity: 0;
+      transform: translate3d(0, calc(16px * var(--motion)), 0);
+    }
+  }
+
+  .rsvp__success:focus-visible {
+    outline: none;
+  }
+
+  .rsvp__successTitle {
+    font-family: var(--f-display);
+    font-size: clamp(1.875rem, 8vw, 2.75rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--c-navy);
+  }
+
+  .rsvp__successText {
+    max-inline-size: 22rem;
+    margin-block-start: calc(var(--s-4) * -1);
+  }
+
+  @media (min-width: 430px) {
+    .choices {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

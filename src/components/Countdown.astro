@@ -1,0 +1,121 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { event } from '@/data/event.config';
+import { copy } from '@/data/copy';
+
+const units = [
+  { key: 'days', label: copy.countdown.units.days },
+  { key: 'hours', label: copy.countdown.units.hours },
+  { key: 'minutes', label: copy.countdown.units.minutes },
+  { key: 'seconds', label: copy.countdown.units.seconds },
+] as const;
+---
+
+<section class="section section--dark grain countdown" id="cuenta" aria-labelledby="countdown-title">
+  <div class="wrap stack">
+    <SectionHeading label={copy.countdown.label} title={copy.countdown.title} id="countdown-title" />
+
+    <div class="countdown__box" data-countdown={event.date} data-reveal="2">
+      <ol class="countdown__grid" data-countdown-grid aria-label="Tiempo restante">
+        {
+          units.map(({ key, label }) => (
+            <li class="countdown__unit">
+              <span class="countdown__value" data-unit={key}>--</span>
+              <span class="countdown__label">{label}</span>
+            </li>
+          ))
+        }
+      </ol>
+
+      <p class="countdown__done" data-countdown-done hidden>{copy.countdown.today}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .countdown__box {
+    inline-size: 100%;
+    margin-block-start: var(--s-10);
+  }
+
+  /* Sin JS los números nunca se llenarían: mejor no mostrar la sección que
+     dejar "-- Días -- Horas" a la vista. */
+  :global(html.no-js) .countdown {
+    display: none;
+  }
+
+  .countdown__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: start;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Sin cajas: los números se separan con filetes verticales de 1px */
+  .countdown__unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-3);
+    padding-inline: var(--s-1);
+    border-inline-start: 1px solid color-mix(in srgb, var(--c-silver) 20%, transparent);
+  }
+
+  .countdown__unit:first-child {
+    border-inline-start: 0;
+  }
+
+  /* `display: grid` de autor le gana al [hidden] del navegador */
+  .countdown__grid[hidden] {
+    display: none;
+  }
+
+  .countdown__value {
+    font-family: var(--f-display);
+    font-size: var(--t-numeral);
+    font-weight: 300;
+    line-height: 1;
+    /* lining-nums: Cormorant usa cifras old-style por defecto y quedarían a
+       la altura de la x. tabular-nums: evita el salto de ancho al pasar de 9
+       a 10 y que los números "bailen" cada segundo. */
+    font-variant-numeric: lining-nums tabular-nums;
+    color: var(--c-white);
+  }
+
+  .countdown__label {
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
+    text-transform: uppercase;
+    color: var(--c-on-dark-faint);
+  }
+
+  .countdown__done {
+    font-family: var(--f-display);
+    font-size: var(--t-title);
+    font-style: italic;
+    color: var(--c-white);
+  }
+
+  @media (min-width: 430px) {
+    .countdown__label {
+      font-size: 0.75rem;
+      letter-spacing: var(--ls-label);
+      text-indent: var(--ls-label);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .countdown__grid {
+      max-inline-size: 44rem;
+      margin-inline: auto;
+    }
+    .countdown__unit {
+      gap: var(--s-4);
+    }
+  }
+</style>
