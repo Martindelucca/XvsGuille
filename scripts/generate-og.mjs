@@ -30,6 +30,7 @@ const EVENT_TYPE = field('eventType', 'XV');
 const MONOGRAM = field('monogram', 'GC');
 const DAY = field('dayNumber', '12');
 const MONTH = field('monthName', 'Septiembre');
+const DATE = `Sábado ${DAY} de ${MONTH}`;
 
 const C = {
   navyDeep: '#0C1E38',
@@ -192,10 +193,9 @@ const tree = h(
         // son de altura de x, y al lado de las versales quedarían enanas.
         h(
           'div',
-          { style: { alignItems: 'baseline', gap: '12px', color: C.white } },
+          { style: { color: C.white } },
           [
-            h('div', { style: { fontSize: '32px', letterSpacing: '3px' } }, DAY),
-            h('div', { style: { fontSize: '24px', letterSpacing: '7px' } }, `· ${MONTH.toUpperCase()}`),
+            h('div', { style: { fontSize: '24px', letterSpacing: '5px' } }, DATE.toUpperCase()),
           ],
         ),
         rule('120px'),

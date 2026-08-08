@@ -100,7 +100,7 @@ export const event = {
 
   /* --- Sitio / SEO --------------------------------------------------------- */
   /** TODO: dominio final. Se usa para canonical y Open Graph. */
-  siteUrl: 'https://xv-guille.vercel.app',
+  siteUrl: 'https://15s-guille.vercel.app/',
   ogImage: '/og-image.png',
 } as const;
 
