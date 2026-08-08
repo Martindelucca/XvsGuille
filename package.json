@@ -21,6 +21,7 @@
     "@fontsource-variable/jost": "^5.2.5",
     "@fontsource/cormorant-garamond": "^5.2.5",
     "@resvg/resvg-js": "^2.6.2",
+    "lightningcss": "^1.33.0",
     "satori": "^0.12.1",
     "typescript": "^5.9.2"
   }
