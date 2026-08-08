@@ -22,7 +22,7 @@ export const event = {
    * desde acá, así que es correcto en cualquier zona horaria del invitado.
    * Si se deja "", el countdown no se muestra.
    */
-  date: '2026-09-12T21:00:00-03:00',
+  date: '2026-09-12T21:30:00-03:00',
   displayDate: '12 de septiembre',
   displayDateLong: '12 de septiembre de 2026',
   dayNumber: '12',
