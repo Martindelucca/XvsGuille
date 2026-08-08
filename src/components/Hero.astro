@@ -1,7 +1,7 @@
 ---
 import Rule from './ornaments/Rule.astro';
 import Botanical from './ornaments/Botanical.astro';
-import { event } from '@/data/event.config';
+import { event, firstSectionId } from '@/data/event.config';
 import { copy } from '@/data/copy';
 ---
 
@@ -32,7 +32,12 @@ import { copy } from '@/data/copy';
     <p class="lead hero__quote" style="--stagger:900ms">{copy.hero.quote}</p>
   </div>
 
-  <a class="hero__scroll" href="#historia" aria-label="Ir al mensaje" style="--stagger:1100ms">
+  <a
+    class="hero__scroll"
+    href={`#${firstSectionId()}`}
+    aria-label="Ir al contenido"
+    style="--stagger:1100ms"
+  >
     <span class="hero__scroll-label">{copy.hero.scrollHint}</span>
     <span class="hero__scroll-line" aria-hidden="true"></span>
   </a>

@@ -55,8 +55,9 @@ export function initOpening(): void {
     document.dispatchEvent(new CustomEvent(OPEN_EVENT));
     document.body.classList.add('is-open');
 
+    // Alcanza para que la solapa se abra (820 ms) y después caiga el telón.
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const wait = reduced ? 0 : 1100;
+    const wait = reduced ? 0 : 1250;
 
     window.setTimeout(() => {
       overlay.hidden = true;

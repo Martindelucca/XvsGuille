@@ -1,0 +1,103 @@
+---
+/**
+ * Sello de lacre dorado con el monograma.
+ *
+ * El borde NO es un círculo: es un blob de 12 puntos con radios apenas
+ * distintos, suavizado con curvas. Un círculo perfecto se lee como una
+ * chapita; el borde irregular es lo que lo vuelve cera.
+ *
+ * Lo usan la portada de la web y la del PDF, así que vive acá y no duplicado.
+ */
+interface Props {
+  text?: string;
+  /** Sólo si se quiere forzar. Sin esto manda `--seal-size` del contenedor:
+   *  un valor inline le ganaría siempre a la variable del sobre. */
+  size?: number;
+  class?: string;
+  [key: string]: unknown;
+}
+const { text = 'GC', size, class: className = '', style = '', ...rest } = Astro.props;
+const sizeVar = typeof size === 'number' ? `--seal-size:${size}px;` : '';
+
+// Id único: si hubiera dos sellos en una página, compartirían el degradado.
+const uid = Math.random().toString(36).slice(2, 8);
+---
+
+<span
+  class={`seal ${className}`}
+  style={`${sizeVar}${style}`}
+  aria-hidden="true"
+  {...rest}
+>
+  <svg class="seal__wax" viewBox="0 0 100 100" focusable="false">
+    <defs>
+      <radialGradient id={`wax-${uid}`} cx="34%" cy="27%" r="74%">
+        <stop offset="0%" stop-color="#f7e4c6" />
+        <stop offset="42%" stop-color="#e0b681" />
+        <stop offset="78%" stop-color="#c2925a" />
+        <stop offset="100%" stop-color="#a97c48" />
+      </radialGradient>
+    </defs>
+
+    <path
+      class="seal__blob"
+      fill={`url(#wax-${uid})`}
+      d="M38.4 6.91Q50 4 61.13 7.74 72.25 11.47 81.26 19.11 90.27 26.75 92.14 38.38 94 50 91.92 61.5 89.84 73 81.17 80.99 72.5 88.97 61.25 92.89 50 96.8 38.95 92.54 27.9 88.28 18.95 80.69 9.99 73.1 7.25 61.55 4.5 50 7.85 38.8 11.2 27.6 19 18.71 26.8 9.82 38.4 6.91Z"
+    />
+
+    <circle class="seal__ring" cx="50" cy="50" r="37" />
+    <circle class="seal__ring seal__ring--inner" cx="50" cy="50" r="33" />
+  </svg>
+
+  <span class="seal__text">{text}</span>
+</span>
+
+<style>
+  .seal {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--seal-size, 108px);
+    block-size: var(--seal-size, 108px);
+    flex: none;
+    /* La sombra sigue el blob, no una caja: por eso va como filtro */
+    filter: drop-shadow(0 10px 16px rgb(20 12 0 / 0.45));
+  }
+
+  .seal__wax {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* Anillos grabados: la marca del cuño */
+  .seal__ring {
+    fill: none;
+    stroke: #7c5526;
+    stroke-width: 0.9;
+    opacity: 0.32;
+  }
+
+  .seal__ring--inner {
+    stroke-width: 0.6;
+    opacity: 0.22;
+    stroke-dasharray: 1 4.5;
+    stroke-linecap: round;
+  }
+
+  /* Relieve: luz arriba, sombra abajo. Es lo que da la sensación de hundido */
+  .seal__text {
+    position: relative;
+    font-family: var(--f-display);
+    font-size: calc(var(--seal-size, 108px) * 0.34);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-indent: 0.08em;
+    color: #7a5323;
+    text-shadow:
+      0 1px 0 rgb(255 246 230 / 0.55),
+      0 -1px 1px rgb(80 52 18 / 0.35);
+  }
+</style>

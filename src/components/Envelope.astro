@@ -1,0 +1,164 @@
+---
+/**
+ * El sobre azul cerrado con lacre dorado.
+ *
+ * Es el mismo objeto en los dos lados: la portada de la web (`/`) y la portada
+ * imprimible del PDF (`/sobre`). Vive acá para que no puedan separarse.
+ *
+ * La animación de apertura también vive acá y se dispara desde cualquier
+ * ancestro con la clase `.is-opening`.
+ */
+import Seal from './ornaments/Seal.astro';
+import { event } from '@/data/event.config';
+
+interface Props {
+  /** Ancho del sobre. Usar unidades absolutas o vw, nunca %. */
+  width?: string;
+  /** Tamaño del lacre. Usar unidades absolutas o vw, nunca %: se resolvería
+   *  contra un contenedor que depende de él. */
+  sealSize?: string;
+  class?: string;
+}
+const {
+  width = 'min(78vw, 360px)',
+  sealSize = 'clamp(72px, 21vw, 96px)',
+  class: className = '',
+} = Astro.props;
+---
+
+<span class={`env ${className}`} style={`--env-w:${width};--env-seal:${sealSize}`}>
+  <span class="env__paper"></span>
+
+  <!-- Solapa. preserveAspectRatio="none" la estira a lo ancho del sobre; el
+       trazo se mantiene parejo gracias a vector-effect. -->
+  <svg class="env__flap" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    <path class="env__flap-shadow" d="M0 3 50 103 100 3" />
+    <path class="env__flap-fill" d="M0 0h100L50 100Z" />
+    <path class="env__flap-edge" d="M0 0 50 100 100 0" />
+  </svg>
+
+  <!-- El lacre va dentro de un contenedor propio: si posicionáramos el <Seal>
+       directamente, su `position: relative` (de su propio scope) le ganaría en
+       especificidad al `absolute` de acá. -->
+  <span class="env__sealSlot">
+    <Seal text={event.monogram} />
+  </span>
+</span>
+
+<style>
+  .env {
+    position: relative;
+    display: block;
+    inline-size: var(--env-w);
+    aspect-ratio: 1.42;
+    /* La perspectiva es lo que hace que la solapa se abra en vez de aplastarse */
+    perspective: 1000px;
+    transition:
+      translate var(--d-base) var(--e-out),
+      scale var(--d-base) var(--e-out);
+  }
+
+  /* Cuerpo del sobre */
+  .env__paper {
+    position: absolute;
+    inset: 0;
+    border-radius: 3px;
+    background: linear-gradient(150deg, #1d3f6c 0%, var(--c-navy-deep) 55%, #0a182d 100%);
+    box-shadow:
+      0 26px 44px -20px rgb(9 24 45 / 0.55),
+      0 6px 14px -8px rgb(9 24 45 / 0.4);
+  }
+
+  /* Trama del papel: sin esto el sobre es un rectángulo plano */
+  .env__paper::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0.07;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .env__flap {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    inline-size: 100%;
+    block-size: 62%;
+    transform-origin: top center;
+    transition:
+      transform 820ms var(--e-in-out),
+      opacity 320ms linear 620ms;
+  }
+
+  .env__flap-fill {
+    fill: rgb(255 255 255 / 0.055);
+    stroke: none;
+  }
+
+  .env__flap-edge {
+    fill: none;
+    stroke: rgb(226 238 248 / 0.28);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* Sombra apenas por debajo del filo: es lo que da el pliegue */
+  .env__flap-shadow {
+    fill: none;
+    stroke: rgb(4 12 24 / 0.45);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* El lacre se apoya justo en la punta de la solapa */
+  .env__sealSlot {
+    position: absolute;
+    inset-block-start: 62%;
+    inset-inline-start: 50%;
+    translate: -50% -50%;
+    display: block;
+    /* Tamaño explícito, no "lo que ocupe el contenido": `translate: -50%` se
+       calcula sobre el ancho de ESTA caja, y si fuera ajustada al contenido
+       con un tamaño en %, la medida se volvería circular y descentraría. */
+    inline-size: var(--env-seal);
+    block-size: var(--env-seal);
+    /* Las custom properties heredan: así el sello toma el tamaño de acá */
+    --seal-size: var(--env-seal);
+    transition:
+      opacity 380ms var(--e-out),
+      scale 520ms var(--e-out);
+  }
+
+  /* --- Apertura: la dispara cualquier ancestro con .is-opening -------------- */
+  :global(.is-opening) .env__flap {
+    transform: rotateX(-162deg);
+    opacity: 0;
+  }
+
+  :global(.is-opening) .env__sealSlot {
+    opacity: 0;
+    scale: 0.78;
+    transition-duration: 300ms;
+  }
+
+  :global(.is-opening) .env {
+    translate: 0 calc(-10px * var(--motion));
+    scale: calc(1 + 0.02 * var(--motion));
+  }
+
+  /* Con movimiento reducido no se abre la solapa: se corta seco */
+  @media (prefers-reduced-motion: reduce) {
+    :global(.is-opening) .env__flap {
+      transform: none;
+    }
+  }
+
+  /* En papel no hay animación ni sombras que valgan */
+  @media print {
+    .env__paper {
+      box-shadow: none;
+    }
+  }
+</style>

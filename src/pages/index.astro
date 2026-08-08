@@ -2,7 +2,6 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import OpeningOverlay from '@/components/OpeningOverlay.astro';
 import Hero from '@/components/Hero.astro';
-import Intro from '@/components/Intro.astro';
 import Countdown from '@/components/Countdown.astro';
 import Agenda from '@/components/Agenda.astro';
 import Location from '@/components/Location.astro';
@@ -12,17 +11,16 @@ import PhotoAlbum from '@/components/PhotoAlbum.astro';
 import Closing from '@/components/Closing.astro';
 import FloatingCta from '@/components/FloatingCta.astro';
 import MusicToggle from '@/components/MusicToggle.astro';
-import { sections } from '@/data/event.config';
+import { sections, firstSectionId } from '@/data/event.config';
 ---
 
 <BaseLayout>
-  <a class="skip-link" href="#historia">Ir al contenido</a>
+  <a class="skip-link" href={`#${firstSectionId()}`}>Ir al contenido</a>
 
   <OpeningOverlay />
 
   <main>
     <Hero />
-    <Intro />
     {sections.countdown && <Countdown />}
     {sections.agenda && <Agenda />}
     {sections.location && <Location />}

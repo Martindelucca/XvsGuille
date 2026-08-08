@@ -67,6 +67,7 @@ Los campos que faltan definir están marcados con `TODO` y hoy valen `''`.
 | `mapsUrl` | Link de Google Maps | Se genera solo con salón + dirección |
 | `mapsEmbedUrl` | Mapa embebido (opcional) | Sólo se muestra el botón (recomendado) |
 | `rsvpDeadline` | Texto, ej. `'el 25 de agosto'` | Se omite la frase de fecha límite |
+| `giftAlias` | Alias bancario / Mercado Pago para regalos | **Se oculta el desplegable del regalo** |
 | `driveUrl` | Carpeta de Drive para las fotos | **Se oculta la sección "Compartamos este recuerdo"** |
 | `dressCode` | Ej. `'Elegante'` | **Se oculta la sección Dress code** |
 | `dressCodeNote` | Aclaración debajo | Se omite |
@@ -79,7 +80,13 @@ Los campos que faltan definir están marcados con `TODO` y hoy valen `''`.
 > comentar código: si el dato está vacío, la sección no se renderiza.
 
 Para apagar una sección aunque el dato exista: `showDressCode: false`,
-`showAgenda: false`.
+`showAgenda: false`, `showGift: false`.
+
+### El regalo
+
+No es una sección: es un **desplegable cerrado al pie de "¿Nos acompañás?"**.
+Quien no lo busca no lo ve; quien lo abre encuentra el alias con un botón para
+copiarlo. Cargá `giftAlias` y aparece solo.
 
 Los **textos** (frases, copy, mensajes de error) viven aparte, en
 [`src/data/copy.ts`](src/data/copy.ts).
@@ -241,6 +248,13 @@ El sitio se sirve **estático desde el CDN**; la única función serverless es
 La página <http://localhost:4321/sobre> es el sobre que se manda por WhatsApp.
 Tiene `noindex` y no forma parte de la invitación.
 
+> **¿Por qué una página aparte y no imprimir la portada de `/`?**
+> Son el mismo diseño — los dos usan `Envelope.astro`, así que no pueden
+> quedar distintos. Pero la portada de `/` es una capa fija que JavaScript
+> **elimina** apenas alguien toca el sobre: si la imprimieras, saldría vacía o
+> saldría la invitación entera de fondo. `/sobre` es la misma imagen sin
+> JavaScript, del tamaño exacto de la hoja y con la URL escrita.
+
 **Para generar el PDF:**
 
 1. Abrí `https://TU-DOMINIO/sobre` **en Chrome** (en escritorio).
@@ -310,7 +324,7 @@ src/
 │   ├── typography.css    ← clases de texto y botones
 │   └── fonts.css         ← @font-face (fuentes propias, sin Google Fonts)
 ├── components/
-│   ├── ornaments/        ← Monogram, Rule, Botanical, Icon (SVG propios)
+│   ├── ornaments/        ← Monogram, Rule, Botanical, Icon, Illustration
 │   └── *.astro           ← una sección por archivo
 ├── lib/                  ← countdown, reveal, rsvp, música, apertura
 ├── layouts/BaseLayout.astro
@@ -333,6 +347,15 @@ Detalles que conviene conocer si vas a tocar el código:
   custom properties (`--botanical-w`) por el mismo motivo.
 - **Todo respeta `prefers-reduced-motion`** vía la variable `--motion`, que
   pasa a `0` y anula desplazamientos, blur y escalas.
+- **Las ilustraciones de sección** viven en `ornaments/Illustration.astro`. No
+  llevan colores fijos: los toman de las variables `--il-*` que define
+  `base.css` según el fondo de la sección (azul o papel). Para agregar una
+  nueva, sumá el dibujo ahí y pasala como
+  `<SectionHeading illustration="…" />`.
+- **La portada `/sobre` deriva toda su geometría** de tres variables
+  (`--card-pad`, `--flap-ratio`, `--seal-size`). La solapa ocupa lugar real en
+  el flujo, así que el sello y el texto se acomodan solos en cualquier tamaño,
+  incluido el de impresión.
 
 ---
 
@@ -344,7 +367,8 @@ Verificado en este proyecto:
 - [x] Ningún dato del evento hardcodeado fuera de `event.config.ts`
 - [x] Las secciones sin datos se ocultan solas, sin huecos ni errores
 - [x] El sitio compila y renderiza con TODOS los campos vacíos
-- [x] El sitio compila y renderiza con todos los campos completos (9 secciones)
+- [x] El sitio compila y renderiza con todos los campos completos (8 secciones)
+- [x] Las 4 ilustraciones adaptan su contraste al fondo de cada sección
 
 **Responsive** — sin scroll horizontal en ningún ancho
 - [x] 375 px (iPhone SE / 13 mini)

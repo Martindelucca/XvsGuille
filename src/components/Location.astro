@@ -10,7 +10,12 @@ const calendar = calendarHref();
 
 <section class="section section--mist location" id="ubicacion" aria-labelledby="location-title">
   <div class="wrap wrap--narrow stack">
-    <SectionHeading label={copy.location.label} title={copy.location.title} id="location-title" />
+    <SectionHeading
+      label={copy.location.label}
+      title={copy.location.title}
+      id="location-title"
+      illustration="location"
+    />
 
     <div class="location__card" data-reveal="2">
       {filled(event.venue) && <p class="location__venue">{event.venue}</p>}

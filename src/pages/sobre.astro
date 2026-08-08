@@ -2,17 +2,19 @@
 /**
  * PORTADA PARA EL PDF que se comparte por WhatsApp.
  *
- * No es parte de la invitación: es una página aparte, con noindex, pensada
- * para exportarse a PDF desde el navegador (Imprimir → Guardar como PDF).
- * Chrome conserva los hipervínculos al exportar, así que TODO el sobre queda
- * clickeable y lleva a la invitación.
+ * Es la MISMA portada que ve el invitado al abrir la web: mismo sobre, mismo
+ * lacre, mismos textos (Envelope.astro es el único origen). La diferencia es
+ * que acá está armada para una hoja: medida exacta, sin JavaScript, sin
+ * scroll, y con la URL escrita para quien mire el PDF impreso.
  *
+ * Existe como página aparte porque la portada de `/` es un overlay fijo que
+ * JavaScript elimina al abrirse: no se puede imprimir de forma confiable.
  * Instrucciones de exportación en README → "Portada PDF".
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import Monogram from '@/components/ornaments/Monogram.astro';
-import Rule from '@/components/ornaments/Rule.astro';
+import Envelope from '@/components/Envelope.astro';
 import { event } from '@/data/event.config';
+import { copy } from '@/data/copy';
 
 const url = event.siteUrl;
 ---
@@ -23,38 +25,27 @@ const url = event.siteUrl;
   bodyClass="sobre-body"
 >
   <main class="sobre">
-    <!-- Toda la tarjeta es el enlace: en el PDF, cualquier toque abre la web -->
-    <a class="sobre__card" href={url} aria-label="Abrir la invitación">
-      <div class="sobre__frame" aria-hidden="true"></div>
+    <!-- Toda la hoja es el enlace: en el PDF se puede tocar en cualquier lado -->
+    <a class="sobre__page" href={url} aria-label={copy.opening.cta}>
+      <p class="label sobre__eyebrow">{copy.opening.eyebrow}</p>
 
-      <!-- Solapa del sobre: dos diagonales limpias, sin dibujitos -->
-      <svg class="sobre__flap" viewBox="0 0 600 190" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 0 L300 165 L600 0" />
-      </svg>
+      {/* En pantalla se ve como la portada web; en papel manda el bloque
+          @media print de abajo, donde las medidas van en milímetros. */}
+      <Envelope width="min(78%, 340px)" sealSize="clamp(72px, 20vw, 92px)" />
 
-      <div class="sobre__seal">
-        <Monogram text={event.monogram} size={104} />
+      <p class="data sobre__date">{event.dayNumber} · {event.monthName}</p>
+
+      <div class="sobre__foot">
+        <span class="sobre__cta">{copy.opening.pdfHint}</span>
+        <span class="sobre__url">{url.replace(/^https?:\/\//, '')}</span>
       </div>
-
-      <p class="sobre__eyebrow">Una noche muy especial está por comenzar</p>
-
-      <p class="sobre__xv">{event.eventType}</p>
-      <p class="sobre__name">{event.celebrantShort}</p>
-
-      <Rule width="170px" class="sobre__rule" />
-
-      <p class="sobre__date">{event.dayNumber} · {event.monthName.toUpperCase()}</p>
-
-      <span class="sobre__cta">Tocá acá para abrir mi invitación</span>
-
-      <span class="sobre__url">{url.replace(/^https?:\/\//, '')}</span>
     </a>
   </main>
 </BaseLayout>
 
 <style>
   :global(body.sobre-body) {
-    background-color: var(--c-blue-light);
+    background-color: var(--c-blue-mist);
   }
 
   .sobre {
@@ -62,152 +53,77 @@ const url = event.siteUrl;
     place-items: center;
     min-block-size: 100svh;
     padding: var(--s-6);
-    background:
-      radial-gradient(120% 90% at 50% 0%, var(--c-white) 0%, transparent 55%),
-      var(--c-blue-light);
   }
 
-  /* Proporción de sobre, no A4: se ve mejor en la burbuja de WhatsApp */
-  .sobre__card {
+  /* Proporción 5:7, la misma de la hoja del PDF */
+  .sobre__page {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    inline-size: min(100%, 620px);
-    /* Alto mínimo con proporción de sobre, pero libre de crecer: con
-       aspect-ratio fijo, los hijos flex se comprimen cuando falta lugar. */
-    min-block-size: min(138vw, 800px);
-    padding: clamp(2.5rem, 7vw, 4rem) clamp(1.5rem, 5vw, 3rem);
+    inline-size: min(100%, 520px);
+    min-block-size: min(140vw, 728px);
+    padding: clamp(2rem, 6vw, 3rem) clamp(1.5rem, 5vw, 2.5rem);
     background:
-      radial-gradient(90% 55% at 50% 8%, #1e4272 0%, transparent 60%),
-      var(--c-navy-deep);
-    color: var(--c-on-dark);
+      radial-gradient(120% 80% at 50% 18%, var(--c-white) 0%, transparent 62%),
+      var(--c-blue-mist);
+    color: var(--c-on-light);
     text-align: center;
     text-decoration: none;
     box-shadow: var(--shadow-lift);
     overflow: hidden;
   }
 
-  /* Grano de papel: el sobre no debe verse como un rectángulo plano */
-  .sobre__card::after {
+  /* Textura de papel, igual que en la portada de la web */
+  .sobre__page::before {
     content: '';
     position: absolute;
     inset: 0;
     opacity: 0.05;
-    mix-blend-mode: soft-light;
+    pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
-    pointer-events: none;
-  }
-
-  .sobre__frame {
-    position: absolute;
-    inset: 14px;
-    border: 1px solid color-mix(in srgb, var(--c-silver) 26%, transparent);
-    pointer-events: none;
-  }
-
-  .sobre__flap {
-    position: absolute;
-    inset-block-start: 14px;
-    inset-inline: 14px;
-    inline-size: calc(100% - 28px);
-    block-size: 30%;
-    fill: none;
-    stroke: color-mix(in srgb, var(--c-silver) 30%, transparent);
-    stroke-width: 1;
-    vector-effect: non-scaling-stroke;
-    pointer-events: none;
-  }
-
-  /* El sello se apoya justo sobre la punta de la solapa */
-  .sobre__seal {
-    position: relative;
-    margin-block-start: 16%;
-    display: grid;
-    place-items: center;
-    flex: none; /* el sello nunca se deforma */
-    inline-size: 132px;
-    block-size: 132px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 38% 32%, var(--c-white) 0%, #d8e3ec 55%, #b9c8d6 100%);
-    color: var(--c-navy-deep);
-    box-shadow:
-      0 10px 24px -12px rgb(0 0 0 / 0.55),
-      inset 0 -2px 6px rgb(23 52 92 / 0.18);
   }
 
   .sobre__eyebrow {
-    margin-block-start: clamp(1.5rem, 4vw, 2.5rem);
-    font-size: 0.75rem;
-    font-weight: 400;
-    letter-spacing: 0.24em;
-    text-indent: 0.24em;
-    text-transform: uppercase;
-    color: var(--c-on-dark-faint);
-    max-inline-size: 20rem;
-    line-height: 1.7;
-  }
-
-  .sobre__xv {
-    margin-block-start: clamp(0.75rem, 2vw, 1.25rem);
-    font-family: var(--f-display);
-    font-size: clamp(4rem, 17vw, 7rem);
-    font-weight: 300;
-    line-height: 0.95;
-    letter-spacing: 0.06em;
-    text-indent: 0.06em;
-    background: linear-gradient(180deg, var(--c-white) 0%, var(--c-blue-light) 60%, var(--c-silver) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .sobre__name {
-    font-family: var(--f-display);
-    font-size: clamp(1.75rem, 7vw, 2.75rem);
-    font-weight: 300;
-    font-style: italic;
-    color: var(--c-white);
-  }
-
-  :global(.sobre__rule) {
-    margin-block: clamp(1.25rem, 3.5vw, 2rem);
-    color: var(--c-silver);
+    color: var(--c-on-light-soft);
+    margin-block-end: clamp(1.75rem, 6vw, 3rem);
   }
 
   .sobre__date {
-    font-size: 0.8125rem;
-    font-weight: 400;
-    letter-spacing: 0.28em;
-    text-indent: 0.28em;
-    color: var(--c-on-dark);
-    font-variant-numeric: lining-nums;
+    margin-block-start: clamp(1.75rem, 6vw, 3rem);
+    color: var(--c-navy);
   }
 
-  /* Zona clickeable explícita: en un PDF hay que decirle al lector qué tocar */
-  .sobre__cta {
+  .sobre__foot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-block-start: auto;
-    padding: 0.95rem 1.75rem;
-    border: 1px solid color-mix(in srgb, var(--c-silver) 55%, transparent);
-    font-size: 0.6875rem;
+    padding-block-start: var(--s-8);
+  }
+
+  /* Zona clickeable explícita: en un PDF hay que decir qué tocar */
+  .sobre__cta {
+    padding: 0.9rem 1.6rem;
+    border: 1px solid color-mix(in srgb, var(--c-navy) 28%, transparent);
+    font-size: 0.625rem;
     font-weight: 400;
-    letter-spacing: 0.22em;
-    text-indent: 0.22em;
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
     text-transform: uppercase;
-    color: var(--c-white);
+    color: var(--c-navy);
   }
 
   .sobre__url {
-    margin-block-start: 0.9rem;
+    margin-block-start: 0.85rem;
     font-size: 0.6875rem;
     letter-spacing: 0.1em;
-    color: var(--c-on-dark-faint);
+    color: var(--c-on-light-soft);
   }
 
-  /* --- Exportación a PDF ---------------------------------------------------
-     El sobre ocupa la hoja entera, sin márgenes ni fondos de página. */
+  /* --- Exportación a PDF --------------------------------------------------- */
   @page {
-    size: 148mm 207mm; /* proporción 5:7, cómoda para WhatsApp */
+    size: 148mm 207mm; /* proporción 5:7 */
     margin: 0;
   }
 
@@ -215,15 +131,20 @@ const url = event.siteUrl;
     .sobre {
       min-block-size: auto;
       padding: 0;
-      background: none;
     }
 
-    .sobre__card {
+    .sobre__page {
       inline-size: 148mm;
       block-size: 207mm;
       min-block-size: 0;
       box-shadow: none;
       break-inside: avoid;
+    }
+
+    /* En papel las medidas se piensan en milímetros, no en píxeles */
+    :global(.env) {
+      --env-w: 104mm;
+      --env-seal: 26mm;
     }
   }
 </style>

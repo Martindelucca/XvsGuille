@@ -1,11 +1,14 @@
 ---
 import Rule from './ornaments/Rule.astro';
+import Illustration from './ornaments/Illustration.astro';
 import { event, filled } from '@/data/event.config';
 import { copy } from '@/data/copy';
 ---
 
 <section class="section section--navy dress" id="dresscode" aria-labelledby="dress-title">
   <div class="wrap wrap--narrow stack">
+    <Illustration name="dresscode" class="dress__il" data-reveal="0" />
+
     <p class="label" data-reveal="0">{copy.dressCode.label}</p>
 
     <h2 class="dress__value" id="dress-title" data-reveal="1">{event.dressCode}</h2>
@@ -23,6 +26,10 @@ import { copy } from '@/data/copy';
 </section>
 
 <style>
+  :global(.dress__il) {
+    margin-block-end: var(--s-5);
+  }
+
   .dress__value {
     margin-block-start: var(--s-5);
     font-family: var(--f-display);

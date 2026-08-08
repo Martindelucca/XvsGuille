@@ -1,50 +1,38 @@
-﻿---
-import Monogram from './ornaments/Monogram.astro';
-import Rule from './ornaments/Rule.astro';
+---
+/**
+ * Portada de la web: un sobre azul cerrado con lacre dorado.
+ *
+ * El sobre ENTERO es el botón: se toca en cualquier parte, la solapa se abre y
+ * recién ahí se revela la invitación. Un solo control, sin elementos
+ * interactivos anidados.
+ */
+import Envelope from './Envelope.astro';
 import { event } from '@/data/event.config';
 import { copy } from '@/data/copy';
 ---
 
 <div class="opening" data-opening role="dialog" aria-modal="true" aria-labelledby="opening-title">
-  <div class="opening__light" aria-hidden="true"></div>
-
   <div class="opening__inner">
-    <Monogram
-      text={event.monogram}
-      size={76}
-      class="opening__mono"
-      data-rise
-      style="animation-delay:160ms"
-    />
-
-    <p class="label opening__eyebrow" data-rise style="animation-delay:320ms">
+    <p class="label opening__eyebrow" id="opening-title" data-rise style="animation-delay:220ms">
       {copy.opening.eyebrow}
-    </p>
-
-    {/* <p> y no <h1>: el único <h1> del documento es el del hero. La portada
-        es una puerta transitoria, no un nivel de la estructura. */}
-    <p class="opening__title" id="opening-title" data-rise style="animation-delay:420ms">
-      <span class="opening__xv">{event.eventType}</span>
-      <span class="opening__name">{event.celebrantShort}</span>
-    </p>
-
-    <Rule width="150px" class="opening__rule" data-rise style="animation-delay:560ms" />
-
-    <p class="data opening__date" data-rise style="animation-delay:640ms">
-      {event.dayNumber} · {event.monthName}
     </p>
 
     <button
       type="button"
-      class="btn btn--onDark opening__cta"
+      class="opening__btn"
       data-opening-btn
+      aria-label={copy.opening.cta}
       data-rise
-      style="animation-delay:760ms"
+      style="animation-delay:380ms"
     >
-      {copy.opening.cta}
+      <Envelope />
     </button>
 
-    <p class="opening__hint" data-rise style="animation-delay:900ms">{copy.opening.hint}</p>
+    <p class="data opening__date" data-rise style="animation-delay:620ms">
+      {event.dayNumber} · {event.monthName}
+    </p>
+
+    <p class="opening__hint" data-rise style="animation-delay:760ms">{copy.opening.hint}</p>
   </div>
 </div>
 
@@ -58,50 +46,27 @@ import { copy } from '@/data/copy';
     padding: var(--gutter);
     padding-block-end: max(var(--gutter), env(safe-area-inset-bottom));
     background:
-      radial-gradient(120% 80% at 50% 12%, #1b3a63 0%, transparent 60%),
-      var(--c-navy-deep);
-    color: var(--c-on-dark);
+      radial-gradient(120% 80% at 50% 22%, var(--c-white) 0%, transparent 62%),
+      var(--c-blue-mist);
+    color: var(--c-on-light);
     text-align: center;
     overflow: hidden;
-    transition:
-      opacity var(--d-curtain) var(--e-in-out),
-      transform var(--d-curtain) var(--e-in-out);
+    transition: opacity 620ms var(--e-in-out) 520ms;
+  }
+
+  /* Papel: la portada es clara, así que la textura se nota y suma */
+  .opening::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   /* Sin JS no hay forma de cerrarlo: entonces no existe. */
   :global(html.no-js) .opening {
     display: none;
-  }
-
-  /* Luz que respira detrás del monograma */
-  .opening__light {
-    position: absolute;
-    inset-block-start: -20%;
-    inset-inline-start: 50%;
-    inline-size: min(140vw, 900px);
-    aspect-ratio: 1;
-    translate: -50% 0;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--c-blue) 38%, transparent) 0%,
-      transparent 62%
-    );
-    filter: blur(40px);
-    opacity: 0.75;
-    animation: breathe 9s var(--e-in-out) infinite;
-    pointer-events: none;
-  }
-
-  @keyframes breathe {
-    0%,
-    100% {
-      opacity: calc(0.55 + 0.2 * var(--motion));
-      scale: 1;
-    }
-    50% {
-      opacity: 0.75;
-      scale: calc(1 + 0.06 * var(--motion));
-    }
   }
 
   .opening__inner {
@@ -112,91 +77,63 @@ import { copy } from '@/data/copy';
     max-inline-size: 32rem;
   }
 
-  /* Los ornamentos son componentes hijos y llevan su propio scope: para
-     posicionarlos desde acá hay que salir del scope a propósito. */
-  :global(.opening__mono) {
-    color: var(--c-blue-light);
-  }
-
   .opening__eyebrow {
-    margin-block-start: var(--s-6);
-    color: var(--c-on-dark-faint);
+    color: var(--c-on-light-soft);
   }
 
-  .opening__title {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-block-start: var(--s-4);
+  .opening__btn {
+    display: block;
+    margin-block-start: var(--s-7);
+    padding: 0;
+    border: 0;
+    background: none;
+    border-radius: var(--r-md);
+    cursor: pointer;
   }
 
-  .opening__xv {
-    font-family: var(--f-display);
-    font-size: clamp(4rem, 22vw, 7rem);
-    font-weight: 300;
-    line-height: var(--lh-tight);
-    letter-spacing: 0.06em;
-    text-indent: 0.06em;
-    background: linear-gradient(
-      180deg,
-      var(--c-white) 0%,
-      var(--c-blue-light) 55%,
-      var(--c-silver) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  .opening__btn:focus-visible {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 10px;
   }
 
-  .opening__name {
-    margin-block-start: var(--s-2);
-    font-family: var(--f-display);
-    font-size: clamp(1.75rem, 8vw, 2.5rem);
-    font-weight: 300;
-    font-style: italic;
-    color: var(--c-on-dark);
+  @media (hover: hover) {
+    .opening__btn:hover :global(.env) {
+      translate: 0 calc(-4px * var(--motion));
+    }
   }
 
-  :global(.opening__rule) {
-    margin-block: var(--s-6);
-    color: var(--c-silver);
+  .opening__btn:active :global(.env) {
+    scale: calc(1 - 0.012 * var(--motion));
   }
 
   .opening__date {
-    color: var(--c-on-dark-muted);
-  }
-
-  .opening__cta {
     margin-block-start: var(--s-8);
-    min-inline-size: min(19rem, 100%);
+    color: var(--c-navy);
   }
 
   .opening__hint {
-    margin-block-start: var(--s-5);
+    margin-block-start: var(--s-4);
     font-size: 0.8125rem;
     line-height: 1.5;
-    letter-spacing: 0.02em;
-    color: var(--c-on-dark-faint);
+    color: var(--c-on-light-soft);
     max-inline-size: 22rem;
   }
 
-  /* --- Cortina de salida -------------------------------------------------- */
+  /* La solapa y el lacre se animan desde Envelope.astro, que reacciona a
+     `.is-opening`. Acá sólo cae el telón, con retardo. */
   .opening.is-opening {
     opacity: 0;
-    transform: translate3d(0, calc(-4% * var(--motion)), 0);
     pointer-events: none;
   }
 
-  .opening.is-opening .opening__inner {
-    opacity: 0;
-    transform: translate3d(0, calc(-24px * var(--motion)), 0);
-    transition:
-      opacity 520ms var(--e-in-out),
-      transform 520ms var(--e-in-out);
+  @media (prefers-reduced-motion: reduce) {
+    .opening {
+      transition-delay: 0ms;
+    }
   }
 
-  @media (min-height: 800px) {
-    .opening__cta {
+  @media (min-height: 780px) {
+    .opening__btn {
       margin-block-start: var(--s-10);
     }
   }

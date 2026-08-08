@@ -1,0 +1,217 @@
+---
+/**
+ * Regalo — desplegable discreto al pie de "¿Nos acompañás?".
+ *
+ * Va en <details> a propósito: se abre y se cierra sin JavaScript, es
+ * navegable con teclado y los lectores de pantalla lo anuncian como
+ * información adicional. Cerrado por defecto: quien no lo busca, no lo ve.
+ */
+import Icon from './ornaments/Icon.astro';
+import { event } from '@/data/event.config';
+import { copy } from '@/data/copy';
+---
+
+<div class="gift" data-reveal="0">
+  <details class="gift__details">
+    <summary class="gift__summary">
+      <Icon name="gift" size={15} class="gift__icon" />
+      <span class="gift__triggerText">{copy.gift.trigger}</span>
+      <span class="gift__chevron" aria-hidden="true"></span>
+    </summary>
+
+    <div class="gift__body">
+      <p class="gift__text">{copy.gift.text}</p>
+
+      <p class="gift__aliasLabel">{copy.gift.aliasLabel}</p>
+      <p class="gift__alias" data-gift-alias>{event.giftAlias}</p>
+
+      <button
+        type="button"
+        class="gift__copy"
+        data-gift-copy
+        data-label-idle={copy.gift.copy}
+        data-label-done={copy.gift.copied}
+        data-label-error={copy.gift.copyError}
+      >
+        <span class="gift__copyIdle">{copy.gift.copy}</span>
+        <span class="gift__copyDone">{copy.gift.copied}</span>
+      </button>
+
+      <p class="gift__status" data-gift-status role="status" aria-live="polite"></p>
+    </div>
+  </details>
+</div>
+
+<style>
+  .gift {
+    inline-size: 100%;
+    max-inline-size: var(--measure);
+    margin-block-start: var(--s-10);
+    padding-block-start: var(--s-7);
+    border-block-start: 1px solid color-mix(in srgb, var(--c-navy) 12%, transparent);
+  }
+
+  .gift__details {
+    inline-size: 100%;
+  }
+
+  /* --- Disparador ----------------------------------------------------------
+     Deliberadamente callado: versalita chica, sin caja, sin color de acento. */
+  .gift__summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-3);
+    min-block-size: 44px;
+    padding: var(--s-2);
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.6875rem;
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    color: var(--c-on-light-soft);
+    transition: color var(--d-micro) var(--e-out);
+  }
+
+  /* El triangulito nativo rompe la composición en Safari y en Chrome */
+  .gift__summary::-webkit-details-marker {
+    display: none;
+  }
+  .gift__summary::marker {
+    content: '';
+  }
+
+  .gift__summary:focus-visible {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 3px;
+    border-radius: var(--r-sm);
+  }
+
+  @media (hover: hover) {
+    .gift__summary:hover {
+      color: var(--c-navy);
+    }
+  }
+
+  .gift__triggerText {
+    text-indent: var(--ls-wide);
+  }
+
+  .gift__chevron {
+    inline-size: 7px;
+    block-size: 7px;
+    border-inline-end: 1px solid currentColor;
+    border-block-end: 1px solid currentColor;
+    rotate: 45deg;
+    translate: 0 -2px;
+    transition: rotate var(--d-micro) var(--e-out);
+  }
+
+  .gift__details[open] .gift__chevron {
+    rotate: 225deg;
+    translate: 0 2px;
+  }
+
+  /* --- Contenido ------------------------------------------------------------ */
+  .gift__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-block-start: var(--s-6);
+    text-align: center;
+  }
+
+  .gift__details[open] .gift__body {
+    animation: giftIn var(--d-base) var(--e-out) both;
+  }
+
+  @keyframes giftIn {
+    from {
+      opacity: 0;
+      transform: translate3d(0, calc(-8px * var(--motion)), 0);
+    }
+  }
+
+  .gift__text {
+    max-inline-size: 25rem;
+    font-size: var(--t-small);
+    line-height: 1.7;
+    color: var(--c-on-light-muted);
+  }
+
+  .gift__aliasLabel {
+    margin-block-start: var(--s-6);
+    font-size: var(--t-label);
+    letter-spacing: var(--ls-label);
+    text-indent: var(--ls-label);
+    text-transform: uppercase;
+    color: var(--c-on-light-soft);
+  }
+
+  .gift__alias {
+    margin-block-start: var(--s-2);
+    font-family: var(--f-display);
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--c-navy);
+    /* Un toque largo en el celular selecciona el alias entero, no una palabra */
+    user-select: all;
+    overflow-wrap: anywhere;
+  }
+
+  /* --- Botón copiar --------------------------------------------------------- */
+  .gift__copy {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 44px;
+    margin-block-start: var(--s-5);
+    padding-block: var(--s-2);
+    padding-inline: var(--s-4) calc(var(--s-4) - 0.18em);
+    font-size: 0.625rem;
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    color: var(--c-on-light-soft);
+    border-block-end: 1px solid currentColor;
+    transition: color var(--d-micro) var(--e-out);
+  }
+
+  .gift__copyDone {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .gift__copy[data-state='done'] {
+    color: var(--c-navy);
+  }
+
+  .gift__copy[data-state='done'] .gift__copyIdle {
+    opacity: 0;
+  }
+
+  .gift__copy[data-state='done'] .gift__copyDone {
+    position: static;
+    opacity: 1;
+  }
+
+  .gift__copyIdle,
+  .gift__copyDone {
+    text-indent: var(--ls-wide);
+    transition: opacity var(--d-micro) var(--e-out);
+  }
+
+  /* El mensaje sólo ocupa lugar cuando hay algo que decir */
+  .gift__status {
+    margin-block-start: var(--s-3);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--c-on-light-soft);
+    max-inline-size: 22rem;
+  }
+
+  .gift__status:empty {
+    display: none;
+  }
+</style>

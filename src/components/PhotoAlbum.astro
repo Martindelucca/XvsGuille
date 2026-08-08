@@ -4,6 +4,7 @@
  * durante la fiesta. Por eso es la más contrastada de toda la página.
  */
 import Icon from './ornaments/Icon.astro';
+import Illustration from './ornaments/Illustration.astro';
 import Rule from './ornaments/Rule.astro';
 import { event } from '@/data/event.config';
 import { copy } from '@/data/copy';
@@ -13,9 +14,7 @@ import { copy } from '@/data/copy';
   <div class="album__glow" aria-hidden="true"></div>
 
   <div class="wrap wrap--narrow stack">
-    <span class="album__icon" data-reveal="0" aria-hidden="true">
-      <Icon name="camera" size={30} />
-    </span>
+    <Illustration name="photos" size={84} class="album__il" data-reveal="0" />
 
     <p class="label album__label" data-reveal="1">{copy.photos.label}</p>
 
@@ -59,16 +58,6 @@ import { copy } from '@/data/copy';
     );
     filter: blur(50px);
     pointer-events: none;
-  }
-
-  .album__icon {
-    display: grid;
-    place-items: center;
-    inline-size: 66px;
-    block-size: 66px;
-    border: 1px solid color-mix(in srgb, var(--c-silver) 30%, transparent);
-    border-radius: 50%;
-    color: var(--c-blue-light);
   }
 
   .album__label {

@@ -13,7 +13,12 @@ const units = [
 
 <section class="section section--dark grain countdown" id="cuenta" aria-labelledby="countdown-title">
   <div class="wrap stack">
-    <SectionHeading label={copy.countdown.label} title={copy.countdown.title} id="countdown-title" />
+    <SectionHeading
+      label={copy.countdown.label}
+      title={copy.countdown.title}
+      id="countdown-title"
+      illustration="calendar"
+    />
 
     <div class="countdown__box" data-countdown={event.date} data-reveal="2">
       <ol class="countdown__grid" data-countdown-grid aria-label="Tiempo restante">

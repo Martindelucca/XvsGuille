@@ -153,6 +153,24 @@ p {
   color: var(--c-on-light);
 }
 
+/* Las ilustraciones heredan su contraste del fondo de la sección: un solo
+   lugar decide cómo se ven sobre azul y cómo sobre papel. */
+.section--dark,
+.section--navy {
+  --il-line: var(--c-blue-light);
+  --il-fill: color-mix(in srgb, var(--c-blue-light) 16%, transparent);
+  --il-fill-strong: color-mix(in srgb, var(--c-blue-light) 30%, transparent);
+  --il-paper: var(--c-ivory);
+}
+
+.section--paper,
+.section--mist {
+  --il-line: var(--c-navy);
+  --il-fill: color-mix(in srgb, var(--c-navy) 10%, transparent);
+  --il-fill-strong: color-mix(in srgb, var(--c-navy) 18%, transparent);
+  --il-paper: var(--c-white);
+}
+
 .wrap {
   width: 100%;
   max-width: var(--content-max);

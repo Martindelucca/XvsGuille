@@ -5,6 +5,7 @@ import { initCountdown } from './countdown';
 import { initRsvp } from './rsvp';
 import { initMusic } from './music';
 import { initFloatingCta } from './floating-cta';
+import { initGift } from './gift';
 
 const boot = (): void => {
   initOpening();
@@ -13,6 +14,7 @@ const boot = (): void => {
   initRsvp();
   initMusic();
   initFloatingCta();
+  initGift();
 };
 
 if (document.readyState === 'loading') {

@@ -7,18 +7,16 @@
 export const copy = {
   opening: {
     eyebrow: 'Estás invitado a celebrar',
+    /* Nombre accesible del sobre: es lo que anuncia un lector de pantalla. */
     cta: 'Abrir invitación',
-    hint: 'Una noche muy especial está por comenzar',
+    hint: 'Tocá el sobre para abrir la invitación',
+    /* Sólo en la portada del PDF, donde no hay nada que tocar todavía. */
+    pdfHint: 'Tocá el sobre para abrir mi invitación',
   },
 
   hero: {
     quote: 'Hay noches que se sueñan mucho antes de vivirlas.\nQuiero que esta la vivamos juntos.',
     scrollHint: 'Deslizá',
-  },
-
-  intro: {
-    label: 'La espera',
-    text: 'Durante años imaginé esta noche: la música, la mesa larga, la gente que quiero en un mismo lugar.\nLlegó el momento de celebrar mis quince.',
   },
 
   countdown: {
@@ -80,6 +78,17 @@ export const copy = {
       offline: 'Parece que estás sin conexión.',
     },
     whatsapp: 'Confirmar por WhatsApp',
+  },
+
+  gift: {
+    /* El tono importa: primero se aclara que no hace falta, y recién después
+       se da el dato. Así el bloque no se lee como un pedido. */
+    trigger: 'Si querés hacerme un regalo',
+    text: 'Que estés esa noche ya es más que suficiente. Si igual tenías ganas de un detalle, te dejo mi alias.',
+    aliasLabel: 'Alias',
+    copy: 'Copiar alias',
+    copied: 'Alias copiado',
+    copyError: 'No se pudo copiar. Podés seleccionarlo y copiarlo a mano.',
   },
 
   photos: {

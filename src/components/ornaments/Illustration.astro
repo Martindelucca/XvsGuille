@@ -1,0 +1,173 @@
+---
+/**
+ * Ilustraciones de sección — SVG propios, una sola familia visual.
+ *
+ * Criterio: dibujo de línea en el azul de la invitación + UN acento cálido por
+ * pieza. Así aportan color sin traer la paleta saturada de un set de íconos
+ * genérico, y funcionan igual sobre papel o sobre azul profundo.
+ *
+ * Los colores entran por custom properties, así que cada sección ajusta el
+ * contraste sin tocar el SVG:
+ *   --il-line    trazo (por defecto currentColor)
+ *   --il-fill    relleno suave de los cuerpos
+ *   --il-paper   superficies claras (papel, camisa)
+ *   --il-accent  el acento cálido
+ */
+interface Props {
+  name: 'calendar' | 'location' | 'dresscode' | 'photos';
+  size?: number;
+  class?: string;
+  [key: string]: unknown;
+}
+const { name, size = 72, class: className = '', ...rest } = Astro.props;
+---
+
+{/* Decorativas: el título que va justo debajo ya dice lo mismo, así que
+    anunciarlas sólo agregaría ruido en un lector de pantalla. */}
+<span class={`il il--${name} ${className}`} style={`--il-size:${size}px`} aria-hidden="true" {...rest}>
+  <svg viewBox="0 0 64 64" fill="none" focusable="false" aria-hidden="true">
+    {
+      name === 'calendar' && (
+        <g>
+          <rect class="il-body" x="7" y="15" width="50" height="42" rx="4" />
+          <path class="il-band" d="M7 19a4 4 0 0 1 4-4h42a4 4 0 0 1 4 4v9H7Z" />
+          <path class="il-line" d="M20 8v13M44 8v13" stroke-linecap="round" />
+          {/* Rejilla de días: uno solo marcado, el del evento */}
+          <g class="il-dots">
+            <circle cx="18" cy="36" r="2" />
+            <circle cx="28" cy="36" r="2" />
+            <circle cx="38" cy="36" r="2" />
+            <circle cx="46" cy="36" r="2" />
+            <circle cx="18" cy="45" r="2" />
+            <circle cx="38" cy="45" r="2" />
+            <circle cx="46" cy="45" r="2" />
+          </g>
+          <circle class="il-accent-fill" cx="28" cy="45" r="4.5" />
+        </g>
+      )
+    }
+
+    {
+      name === 'location' && (
+        <g>
+          {/* Mapa plegado en tres paños */}
+          <path class="il-body" d="M4 45 22 38 42 45 60 38v17l-18 7-20-7-20 7Z" />
+          <path class="il-line" d="M22 38v17M42 45v17" />
+          {/* Pin: el único elemento cálido, para que sea lo primero que se ve */}
+          <path
+            class="il-accent-fill il-accent-stroke"
+            d="M32 4c-7.7 0-14 6.2-14 13.9 0 9.7 14 24.1 14 24.1s14-14.4 14-24.1C46 10.2 39.7 4 32 4Z"
+          />
+          <circle class="il-paper" cx="32" cy="18" r="5.4" />
+        </g>
+      )
+    }
+
+    {
+      name === 'dresscode' && (
+        <g>
+          {/* Vestido, detrás: hombros → escote en V → cintura marcada → falda
+              acampanada. Sin el estrechamiento en la cintura lee como delantal. */}
+          <path class="il-body" d="M38 11 47 22 56 11 54 30 63 56H31l9-26Z" />
+          <path class="il-line" d="M38 11l9 11 9-11" stroke-linejoin="round" />
+          {/* Cinturón: sigue el ángulo del talle, no es un rectángulo recto */}
+          <path class="il-paper" d="M39.8 28h14.4l1.2 6H38.6Z" />
+          {/* Saco, delante */}
+          <path class="il-body" d="M3 27c0-5 3-7.6 7-8.8L20 15l10 3.2c4 1.2 7 3.8 7 8.8v29H3Z" />
+          <path class="il-paper" d="M20 15l-7 12 7 8 7-8Z" />
+          <path class="il-line" d="M20 15v20" />
+          {/* Moño */}
+          <path class="il-accent-fill" d="M12 18.5 19 22l-7 3.5Zm16 0L21 22l7 3.5Z" />
+          <rect class="il-accent-fill" x="18.2" y="19.8" width="3.6" height="4.4" rx="1.2" />
+        </g>
+      )
+    }
+
+    {
+      name === 'photos' && (
+        <g>
+          {/* Foto de atrás: papel sólido y bien asomada, si no la pila no se lee */}
+          <rect class="il-paper" x="18" y="7" width="41" height="31" rx="3" transform="rotate(9 38 22)" />
+          {/* Foto de adelante */}
+          <rect class="il-paper" x="6" y="19" width="46" height="36" rx="3" />
+          <rect class="il-body" x="11" y="24" width="36" height="26" rx="1.5" />
+          {/* Paisaje: montañas frías, sol cálido */}
+          <circle class="il-accent-fill" cx="40" cy="31" r="5" />
+          <path class="il-mint" d="M11 50l11-15 6 7 7-10 12 18Z" />
+          <rect class="il-line-rect" x="11" y="24" width="36" height="26" rx="1.5" />
+        </g>
+      )
+    }
+  </svg>
+</span>
+
+<style>
+  .il {
+    display: block;
+    inline-size: var(--il-size);
+    block-size: var(--il-size);
+    flex: none;
+    color: var(--il-line, currentColor);
+  }
+
+  .il svg {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* Trazo uniforme en todas las piezas: es lo que las vuelve una familia */
+  .il :global(svg *) {
+    stroke: var(--il-line, currentColor);
+    stroke-width: 1.6;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .il :global(.il-body) {
+    fill: var(--il-fill, color-mix(in srgb, currentColor 14%, transparent));
+  }
+
+  .il :global(.il-band) {
+    fill: var(--il-fill-strong, color-mix(in srgb, currentColor 26%, transparent));
+  }
+
+  .il :global(.il-paper) {
+    fill: var(--il-paper, var(--c-ivory));
+  }
+
+  /* El trazo universal de arriba también alcanza a los círculos: hay que
+     apagarlo en los hijos, no sólo en el grupo, o los puntos salen abultados. */
+  .il :global(.il-dots),
+  .il :global(.il-dots *) {
+    fill: var(--il-line, currentColor);
+    stroke: none;
+    opacity: 0.45;
+  }
+
+  .il :global(.il-accent-fill) {
+    fill: var(--il-accent, var(--c-accent));
+    stroke: none;
+  }
+
+  .il :global(.il-accent-stroke) {
+    stroke: var(--il-accent-line, color-mix(in srgb, var(--c-accent-deep) 70%, transparent));
+  }
+
+  .il :global(.il-mint) {
+    fill: var(--il-mint, var(--c-accent-mint));
+    stroke: none;
+  }
+
+  /* El marco de la foto se redibuja encima del paisaje para recortarlo */
+  .il :global(.il-line-rect) {
+    fill: none;
+  }
+
+  .il :global(.il-line) {
+    stroke-linecap: round;
+  }
+
+  /* El paisaje no debe pisar los bordes redondeados del marco */
+  .il--photos :global(.il-mint) {
+    clip-path: inset(0 round 1.5px);
+  }
+</style>

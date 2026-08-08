@@ -29,6 +29,14 @@
   --c-on-light-soft: #556f88; /* 5.0:1 — el tono más claro admisible en TEXTO */
   --c-on-light-faint: #8aa2b8; /* SÓLO filetes y ornamentos: no llega a AA */
 
+  /* Acentos cálidos — SÓLO dentro de las ilustraciones y el sello.
+     Son la única temperatura cálida de toda la invitación: usados con
+     cuentagotas dan color sin romper el eje azul. */
+  --c-accent: #e0b98f; /* champán */
+  --c-accent-deep: #c99a68;
+  --c-accent-rose: #e2a9a4; /* rosa empolvado */
+  --c-accent-mint: #9dc9b4; /* verde apagado, para el paisaje de las fotos */
+
   /* Semánticos */
   --c-error: #a03a3a;
   --c-error-on-dark: #f0b3b3;

@@ -1,4 +1,4 @@
-/* ============================================================================
+﻿/* ============================================================================
  *  EVENT CONFIG — ÚNICO archivo que hay que editar para cambiar la invitación.
  *  Ningún dato del evento debe escribirse dentro de un componente.
  *
@@ -46,7 +46,7 @@ export const event = {
 
   /* --- Confirmación de asistencia ----------------------------------------- */
   /** TODO: fecha límite en texto, ej. "el 25 de agosto". Vacío = se omite la frase. */
-  rsvpDeadline: '1 de septiembre',
+  rsvpDeadline: 'del 1 de septiembre',
   /** Pedir cantidad de acompañantes en el formulario. */
   askCompanions: true,
   /** Máximo de acompañantes seleccionables. */
@@ -60,6 +60,14 @@ export const event = {
    */
   whatsappFallback: '',
 
+  /* --- Regalo (opcional) ---------------------------------------------------
+   * Va como un desplegable cerrado al pie de "¿Nos acompañás?": disponible
+   * para quien lo busque, sin protagonismo para el resto.
+   * Poner en false para ocultarlo aunque haya alias cargado. */
+  showGift: true,
+  /** TODO: alias bancario o de Mercado Pago, ej. 'guille.xv.mp'. Vacío = no se muestra. */
+  giftAlias: 'chalp.g',
+
   /* --- Fotos del evento (Google Drive) ------------------------------------ */
   /** TODO: link de la carpeta de Drive con permiso de subida. Vacío = sección oculta. */
   driveUrl: 'https://drive.google.com/drive/folders/1_wP8lJsV6Zl9x6nzI_xKwZHs-OnsJdfi?usp=sharing',
@@ -70,10 +78,10 @@ export const event = {
   /** TODO: ej. "Elegante". Vacío = sección oculta. */
   dressCode: 'Elegante Sport',
   /** Aclaración opcional bajo el dress code. */
-  dressCodeNote: 'Colores prrohibidos: Azul, Plateado y Bordo',
+  dressCodeNote: 'Colores prohibidos: Azul, Plateado y Bordo',
 
   /* --- Agenda (opcional) --------------------------------------------------- */
-  showAgenda: true,
+  showAgenda: false,
   /** Vacío = sección oculta. Agregar/quitar filas libremente. */
   agenda: [
     // { time: '21:00', label: 'Recepción' },
@@ -110,9 +118,23 @@ export const sections = {
   location: filled(event.venue) || filled(event.address),
   map: filled(event.mapsEmbedUrl),
   dressCode: event.showDressCode && filled(event.dressCode),
+  gift: event.showGift && filled(event.giftAlias),
   photos: filled(event.driveUrl),
   music: filled(event.musicUrl),
 } as const;
+
+/**
+ * Primera ancla que existe después del hero. La usan el indicador "Deslizá" y
+ * el enlace de salto: si el countdown está oculto no pueden apuntar a él.
+ * "confirmar" siempre existe, así que sirve de última red.
+ */
+export const firstSectionId = (): string => {
+  if (sections.countdown) return 'cuenta';
+  if (sections.agenda) return 'agenda';
+  if (sections.location) return 'ubicacion';
+  if (sections.dressCode) return 'dresscode';
+  return 'confirmar';
+};
 
 /** Link de Google Maps: usa el configurado, o arma uno con la dirección. */
 export const mapsHref = (): string => {

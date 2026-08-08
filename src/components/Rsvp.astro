@@ -1,7 +1,8 @@
 ---
 import SectionHeading from './SectionHeading.astro';
 import Rule from './ornaments/Rule.astro';
-import { event, filled, whatsappFallbackHref } from '@/data/event.config';
+import Gift from './Gift.astro';
+import { event, sections, filled, whatsappFallbackHref } from '@/data/event.config';
 import { copy } from '@/data/copy';
 
 const f = copy.rsvp.fields;
@@ -172,6 +173,10 @@ const companionOptions = Array.from({ length: event.maxCompanions + 1 }, (_, i) 
       <p class="body rsvp__successText" data-rsvp-success-text></p>
       <Rule width="80px" />
     </div>
+
+    {/* Nota al pie de la confirmación, no una sección aparte: así el regalo
+        queda disponible sin pedir protagonismo. */}
+    {sections.gift && <Gift />}
   </div>
 </section>
 

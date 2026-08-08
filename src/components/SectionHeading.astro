@@ -1,17 +1,20 @@
 ---
-/** Encabezado común: versalita + título + filete. Evita repetir el patrón. */
+/** Encabezado común: ilustración + versalita + título + filete. */
 import Rule from './ornaments/Rule.astro';
+import Illustration from './ornaments/Illustration.astro';
 
 interface Props {
   label: string;
   title?: string;
   id?: string;
   rule?: boolean;
+  illustration?: 'calendar' | 'location' | 'dresscode' | 'photos';
 }
-const { label, title, id, rule = true } = Astro.props;
+const { label, title, id, rule = true, illustration } = Astro.props;
 ---
 
 <header class="heading" data-reveal="0">
+  {illustration && <Illustration name={illustration} class="heading__il" />}
   <p class="label">{label}</p>
   {title && <h2 class="title heading__title" id={id}>{title}</h2>}
   {/* Sin data-reveal propio: entra junto con el bloque del encabezado. */}
@@ -24,6 +27,10 @@ const { label, title, id, rule = true } = Astro.props;
     flex-direction: column;
     align-items: center;
     text-align: center;
+  }
+
+  :global(.heading__il) {
+    margin-block-end: var(--s-5);
   }
 
   .heading__title {
