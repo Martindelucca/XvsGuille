@@ -14,11 +14,11 @@ import { copy } from '@/data/copy';
 
 <style>
   .floating {
+    display: none;
     position: fixed;
     inset-block-end: max(var(--s-4), env(safe-area-inset-bottom));
     inset-inline: var(--gutter);
     z-index: var(--z-float);
-    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: var(--s-3);

@@ -45,7 +45,7 @@ export const copy = {
 
   rsvp: {
     label: 'Confirmación',
-    title: '¿Nos acompañás?',
+    title: '¿Me acompañás?',
     text: 'Tu presencia es lo que va a hacer que esta noche valga la pena.',
     fields: {
       name: 'Nombre y apellido',
