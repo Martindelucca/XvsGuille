@@ -38,7 +38,6 @@ const C = {
   blueLight: '#DCE8F0',
   silver: '#C9D3DC',
   white: '#FFFFFF',
-  faint: '#7D97B3',
 };
 
 const fontDir = resolve(root, 'node_modules/@fontsource/cormorant-garamond/files');
@@ -114,49 +113,15 @@ const tree = h(
       },
     }),
 
-    // Monograma
     h(
       'div',
       {
         style: {
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '94px',
-          height: '94px',
-          borderRadius: '50%',
-          border: `1px solid ${C.silver}`,
-          color: C.blueLight,
-          fontSize: '38px',
-          letterSpacing: '2px',
-        },
-      },
-      MONOGRAM,
-    ),
-
-    h(
-      'div',
-      {
-        style: {
-          display: 'flex',
-          marginTop: '24px',
-          fontSize: '22px',
-          letterSpacing: '8px',
-          color: C.faint,
-        },
-      },
-      'TE INVITO A CELEBRAR',
-    ),
-
-    h(
-      'div',
-      {
-        style: {
-          display: 'flex',
-          marginTop: '4px',
-          fontSize: '210px',
-          lineHeight: 1.05,
-          letterSpacing: '8px',
+          fontSize: '300px',
+          fontWeight: 400,
+          lineHeight: 0.9,
+          letterSpacing: '5px',
           color: C.white,
         },
       },
@@ -168,7 +133,8 @@ const tree = h(
       {
         style: {
           display: 'flex',
-          fontSize: '68px',
+          marginTop: '18px',
+          fontSize: '84px',
           fontStyle: 'italic',
           fontWeight: 300,
           color: C.blueLight,
@@ -183,22 +149,26 @@ const tree = h(
         style: {
           display: 'flex',
           alignItems: 'center',
-          gap: '20px',
-          marginTop: '28px',
+          gap: '18px',
+          marginTop: '34px',
         },
       },
       [
-        rule('86px'),
+        rule('72px'),
         // El día va un punto más grande: Cormorant usa cifras old-style, que
         // son de altura de x, y al lado de las versales quedarían enanas.
         h(
           'div',
           { style: { color: C.white } },
           [
-            h('div', { style: { fontSize: '32px', letterSpacing: '4px' } }, DATE.toUpperCase()),
+            h(
+              'div',
+              { style: { fontSize: '36px', fontWeight: 400, letterSpacing: '3px' } },
+              DATE.toUpperCase(),
+            ),
           ],
         ),
-        rule('86px'),
+        rule('72px'),
       ],
     ),
   ],
