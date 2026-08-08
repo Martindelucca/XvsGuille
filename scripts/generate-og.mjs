@@ -25,17 +25,12 @@ const field = (name, fallback = '') => {
   return match ? match[1] : fallback;
 };
 
-const CELEBRANT = field('celebrant', 'Guille Chalpe');
 const EVENT_TYPE = field('eventType', 'XV');
 const MONOGRAM = field('monogram', 'GC');
-const DAY = field('dayNumber', '12');
-const MONTH = field('monthName', 'Septiembre');
-const DATE = `Sábado ${DAY} de ${MONTH}`;
 
 const C = {
   navyDeep: '#0C1E38',
   navy: '#17345C',
-  blueLight: '#DCE8F0',
   silver: '#C9D3DC',
   white: '#FFFFFF',
 };
@@ -54,12 +49,6 @@ const fonts = [
     weight: 400,
     style: 'normal',
   },
-  {
-    name: 'Cormorant',
-    data: readFileSync(resolve(fontDir, 'cormorant-garamond-latin-300-italic.woff')),
-    weight: 300,
-    style: 'italic',
-  },
 ];
 
 /**
@@ -71,17 +60,6 @@ const h = (type, props = {}, children = []) => ({
   type,
   props: { ...props, style: { display: 'flex', ...(props.style ?? {}) }, children },
 });
-
-const rule = (width) =>
-  h('div', {
-    style: {
-      display: 'flex',
-      width,
-      height: '1px',
-      background: `linear-gradient(to right, transparent, ${C.silver}, transparent)`,
-      opacity: 0.55,
-    },
-  });
 
 const tree = h(
   'div',
@@ -126,50 +104,6 @@ const tree = h(
         },
       },
       EVENT_TYPE,
-    ),
-
-    h(
-      'div',
-      {
-        style: {
-          display: 'flex',
-          marginTop: '18px',
-          fontSize: '84px',
-          fontStyle: 'italic',
-          fontWeight: 300,
-          color: C.blueLight,
-        },
-      },
-      CELEBRANT,
-    ),
-
-    h(
-      'div',
-      {
-        style: {
-          display: 'flex',
-          alignItems: 'center',
-          gap: '18px',
-          marginTop: '34px',
-        },
-      },
-      [
-        rule('72px'),
-        // El día va un punto más grande: Cormorant usa cifras old-style, que
-        // son de altura de x, y al lado de las versales quedarían enanas.
-        h(
-          'div',
-          { style: { color: C.white } },
-          [
-            h(
-              'div',
-              { style: { fontSize: '36px', fontWeight: 400, letterSpacing: '3px' } },
-              DATE.toUpperCase(),
-            ),
-          ],
-        ),
-        rule('72px'),
-      ],
     ),
   ],
 );
