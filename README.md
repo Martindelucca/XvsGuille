@@ -352,10 +352,13 @@ Detalles que conviene conocer si vas a tocar el código:
   `base.css` según el fondo de la sección (azul o papel). Para agregar una
   nueva, sumá el dibujo ahí y pasala como
   `<SectionHeading illustration="…" />`.
-- **La portada `/sobre` deriva toda su geometría** de tres variables
-  (`--card-pad`, `--flap-ratio`, `--seal-size`). La solapa ocupa lugar real en
-  el flujo, así que el sello y el texto se acomodan solos en cualquier tamaño,
-  incluido el de impresión.
+- **La portada `/sobre` usa las variables reales de `Envelope.astro`**:
+  `--env-w` controla el ancho y `--env-seal` el tamaño del lacre. El sobre
+  conserva `aspect-ratio: 1.42`; la solapa es un SVG con `position: absolute`,
+  ocupa el `62%` superior del sobre y el sello se centra en esa punta mediante
+  otro slot absoluto. Por eso la solapa no ocupa lugar en el flujo. En
+  impresión `/sobre` reemplaza ambas variables por `104mm` y `26mm`, mientras
+  que en pantalla siguen siendo medidas fluidas.
 
 ---
 

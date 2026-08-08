@@ -92,7 +92,7 @@ import { copy } from '@/data/copy';
   }
 
   .opening__btn:focus-visible {
-    outline: 2px solid var(--c-focus);
+    outline: 2px solid var(--c-navy);
     outline-offset: 10px;
   }
 
@@ -135,6 +135,34 @@ import { copy } from '@/data/copy';
   @media (min-height: 780px) {
     .opening__btn {
       margin-block-start: var(--s-10);
+    }
+  }
+
+  /* En móviles apaisados la altura disponible es escasa: el sobre conserva
+     su proporción, pero reduce su ancho y los espacios para que nada se corte.
+     Las variables necesitan !important porque Envelope las recibe inline para
+     mantener su tamaño responsive en el resto de la pantalla. */
+  @media (orientation: landscape) and (max-height: 520px) {
+    .opening {
+      padding-block-start: var(--s-3);
+      padding-block-end: max(var(--s-3), env(safe-area-inset-bottom));
+    }
+
+    .opening__btn {
+      margin-block-start: var(--s-3);
+    }
+
+    .opening__btn :global(.env) {
+      --env-w: min(62vw, 52vh, 300px) !important;
+      --env-seal: clamp(52px, 18vh, 72px) !important;
+    }
+
+    .opening__date {
+      margin-block-start: var(--s-4);
+    }
+
+    .opening__hint {
+      margin-block-start: var(--s-2);
     }
   }
 </style>

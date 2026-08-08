@@ -143,8 +143,10 @@ const url = event.siteUrl;
 
     /* En papel las medidas se piensan en milímetros, no en píxeles */
     :global(.env) {
-      --env-w: 104mm;
-      --env-seal: 26mm;
+      /* Envelope recibe estas variables inline para conservar el tamaño
+         responsive en pantalla; en impresión las medidas de la hoja mandan. */
+      --env-w: 104mm !important;
+      --env-seal: 26mm !important;
     }
   }
 </style>

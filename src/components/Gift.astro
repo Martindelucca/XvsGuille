@@ -22,8 +22,12 @@ import { copy } from '@/data/copy';
     <div class="gift__body">
       <p class="gift__text">{copy.gift.text}</p>
 
-      <p class="gift__aliasLabel">{copy.gift.aliasLabel}</p>
-      <p class="gift__alias" data-gift-alias>{event.giftAlias}</p>
+      {/* El alias va sobre papel blanco: es el dato que se viene a buscar,
+          y así se distingue del fondo del panel. */}
+      <div class="gift__aliasBox">
+        <p class="gift__aliasLabel">{copy.gift.aliasLabel}</p>
+        <p class="gift__alias" data-gift-alias>{event.giftAlias}</p>
+      </div>
 
       <button
         type="button"
@@ -43,34 +47,49 @@ import { copy } from '@/data/copy';
 </div>
 
 <style>
+  /* Panel enmarcado: se despega del formulario sin llegar a ser una sección.
+     El fondo frío contra el marfil de la banda es lo que lo hace visible; el
+     borde de 1px lo termina de encuadrar. */
   .gift {
     inline-size: 100%;
     max-inline-size: var(--measure);
     margin-block-start: var(--s-10);
-    padding-block-start: var(--s-7);
-    border-block-start: 1px solid color-mix(in srgb, var(--c-navy) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-navy) 16%, transparent);
+    border-radius: var(--r-md);
+    background-color: var(--c-blue-mist);
+    overflow: hidden; /* el hover del summary no debe pisar las esquinas */
   }
 
   .gift__details {
     inline-size: 100%;
   }
 
-  /* --- Disparador ----------------------------------------------------------
-     Deliberadamente callado: versalita chica, sin caja, sin color de acento. */
+  /* --- Disparador ---------------------------------------------------------- */
   .gift__summary {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--s-3);
-    min-block-size: 44px;
-    padding: var(--s-2);
+    min-block-size: 56px;
+    /* El padding lateral es ajustado a propósito: con var(--s-5) el rótulo se
+       parte en dos líneas a 375 px. */
+    padding: var(--s-4);
     cursor: pointer;
     list-style: none;
-    font-size: 0.6875rem;
-    letter-spacing: var(--ls-wide);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--c-on-light-soft);
-    transition: color var(--d-micro) var(--e-out);
+    color: var(--c-navy);
+    transition:
+      color var(--d-micro) var(--e-out),
+      background-color var(--d-micro) var(--e-out);
+  }
+
+  /* Icon es un componente hijo: su scope no es el de este archivo.
+     El acento cálido es el único color de la pieza: alcanza para que el ojo
+     la encuentre sin que grite. */
+  :global(.gift__icon) {
+    color: var(--c-accent-deep);
   }
 
   /* El triangulito nativo rompe la composición en Safari y en Chrome */
@@ -82,19 +101,22 @@ import { copy } from '@/data/copy';
   }
 
   .gift__summary:focus-visible {
-    outline: 2px solid var(--c-focus);
-    outline-offset: 3px;
+    outline: 2px solid var(--c-navy);
+    /* El panel recorta cualquier trazo que salga de sus bordes redondeados. */
+    outline-offset: -2px;
     border-radius: var(--r-sm);
   }
 
   @media (hover: hover) {
     .gift__summary:hover {
-      color: var(--c-navy);
+      background-color: color-mix(in srgb, var(--c-blue-light) 55%, var(--c-blue-mist));
     }
   }
 
   .gift__triggerText {
-    text-indent: var(--ls-wide);
+    text-indent: 0.14em;
+    /* Si en una pantalla muy angosta igual se parte, que lo haga parejo */
+    text-wrap: balance;
   }
 
   .gift__chevron {
@@ -117,7 +139,8 @@ import { copy } from '@/data/copy';
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-block-start: var(--s-6);
+    padding: var(--s-6) var(--s-5) var(--s-7);
+    border-block-start: 1px solid color-mix(in srgb, var(--c-navy) 12%, transparent);
     text-align: center;
   }
 
@@ -139,8 +162,17 @@ import { copy } from '@/data/copy';
     color: var(--c-on-light-muted);
   }
 
-  .gift__aliasLabel {
+  .gift__aliasBox {
+    inline-size: 100%;
+    max-inline-size: 22rem;
     margin-block-start: var(--s-6);
+    padding: var(--s-4) var(--s-5);
+    border: 1px solid color-mix(in srgb, var(--c-navy) 10%, transparent);
+    border-radius: var(--r-sm);
+    background-color: var(--c-white);
+  }
+
+  .gift__aliasLabel {
     font-size: var(--t-label);
     letter-spacing: var(--ls-label);
     text-indent: var(--ls-label);
