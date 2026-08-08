@@ -122,12 +122,12 @@ const tree = h(
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: '82px',
-          height: '82px',
+          width: '94px',
+          height: '94px',
           borderRadius: '50%',
           border: `1px solid ${C.silver}`,
           color: C.blueLight,
-          fontSize: '34px',
+          fontSize: '38px',
           letterSpacing: '2px',
         },
       },
@@ -139,9 +139,9 @@ const tree = h(
       {
         style: {
           display: 'flex',
-          marginTop: '34px',
-          fontSize: '20px',
-          letterSpacing: '9px',
+          marginTop: '24px',
+          fontSize: '22px',
+          letterSpacing: '8px',
           color: C.faint,
         },
       },
@@ -154,7 +154,7 @@ const tree = h(
         style: {
           display: 'flex',
           marginTop: '4px',
-          fontSize: '168px',
+          fontSize: '210px',
           lineHeight: 1.05,
           letterSpacing: '8px',
           color: C.white,
@@ -168,7 +168,7 @@ const tree = h(
       {
         style: {
           display: 'flex',
-          fontSize: '58px',
+          fontSize: '68px',
           fontStyle: 'italic',
           fontWeight: 300,
           color: C.blueLight,
@@ -183,22 +183,22 @@ const tree = h(
         style: {
           display: 'flex',
           alignItems: 'center',
-          gap: '26px',
-          marginTop: '38px',
+          gap: '20px',
+          marginTop: '28px',
         },
       },
       [
-        rule('120px'),
+        rule('86px'),
         // El día va un punto más grande: Cormorant usa cifras old-style, que
         // son de altura de x, y al lado de las versales quedarían enanas.
         h(
           'div',
           { style: { color: C.white } },
           [
-            h('div', { style: { fontSize: '24px', letterSpacing: '5px' } }, DATE.toUpperCase()),
+            h('div', { style: { fontSize: '32px', letterSpacing: '4px' } }, DATE.toUpperCase()),
           ],
         ),
-        rule('120px'),
+        rule('86px'),
       ],
     ),
   ],
