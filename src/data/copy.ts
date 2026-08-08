@@ -47,7 +47,6 @@ export const copy = {
     label: 'Confirmación',
     title: '¿Nos acompañás?',
     text: 'Tu presencia es lo que va a hacer que esta noche valga la pena.',
-    deadline: (d: string) => `Te pido que confirmes antes ${d}.`,
     fields: {
       name: 'Nombre y apellido',
       attending: '¿Vas a venir?',

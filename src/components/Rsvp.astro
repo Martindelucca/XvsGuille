@@ -29,7 +29,11 @@ const companionOptions = Array.from({ length: event.maxCompanions + 1 }, (_, i) 
 
     <p class="body rsvp__intro" data-reveal="2">
       {copy.rsvp.text}
-      {filled(event.rsvpDeadline) && <><br />{copy.rsvp.deadline(event.rsvpDeadline)}</>}
+      {filled(event.rsvpDeadline) && (
+        <>
+          <br />Te pido que confirmes antes <strong>{event.rsvpDeadline}</strong>.
+        </>
+      )}
     </p>
 
     <!-- Formulario -->

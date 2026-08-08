@@ -29,7 +29,7 @@ export const event = {
   monthName: 'Septiembre',
 
   /** TODO: horario de inicio, ej. "21:00 hs". Vacío = no se muestra. */
-  time: '21:00 hs',
+  time: '21:30 hs',
 
   /* --- Lugar -------------------------------------------------------------- */
   /** TODO: nombre del salón. Vacío = la sección Ubicación se oculta entera. */
